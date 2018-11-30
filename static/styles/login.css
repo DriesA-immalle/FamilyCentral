@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css?family=Merriweather|Poppins|Roboto');
+
+body
+{
+  background: -webkit-linear-gradient(to right, #0575e6, #021b79);
+  background: linear-gradient(to right, #0575e6, #021b79);
+  overflow: hidden;
+  width: 100%;
+}
+
+h1
+{
+    font-family: 'Poppins';
+    margin-left: 1.5vw;
+}
+
+.login-form
+{
+    width: 50vw;
+    height: 55vh;
+    background-color: #fff;
+    border-radius: 0.5vw;
+    overflow: hidden;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    display: table;
+}
+
+.login-form img
+{
+    margin-top: 6vh;
+    margin-left: 1vw;
+    float: left;
+}
+
+.login-form form
+{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+input[type="email"], input[type="password"]
+{
+    border: solid 4px #a4b0be;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+    padding: 4px;
+    text-align: center;
+    font-family: 'Roboto';
+    width: 15vw;
+    border-radius: 1vw;
+    outline: none;
+    transition: all 0.4s;
+}
+
+input[type="email"]:focus, input[type="password"]:focus
+{
+    border: solid 4px #767f8a;
+    transform: all 0.4s;
+}
+
+input[type="submit"]
+{
+    outline: none;
+    width: 13vw;
+    height: 5vh;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+    margin-left: 1.5vw;
+    border-radius: 0.8vw;
+    transition: all 0.4s;
+    background: linear-gradient(to right, #0575e6, #021b79);
+    font-family: 'Roboto';
+    font-size: 1.2vw;
+    color: #fff;
+    border: none;
+}
+
+input[type="submit"]:hover
+{
+    transition: all 0.4s;
+    
+}
+

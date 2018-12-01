@@ -28,7 +28,8 @@ def home():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        pass
+        session['email'] = request.form['email']
+        session['password'] = request.form['password']
     return render_template('login.html')
 
 @app.route('/logout/')
@@ -43,7 +44,7 @@ def signup():
         pass
     return render_template('signup.html')
 
-@app.route('/myfamily')
+@app.route('/myfamily/')
 @login_required
 def family():
     return render_template('family.html')

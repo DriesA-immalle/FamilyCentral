@@ -40,6 +40,15 @@ h1
     vertical-align: middle;
 }
 
+.login-form form a
+{
+    text-decoration: none;
+    font-family: 'Roboto';
+    font-size: 0.8vw;
+    display: table-cell;
+    padding-left: 3.5vw;
+}
+
 input[type="email"], input[type="password"]
 {
     border: solid 4px #a4b0be;

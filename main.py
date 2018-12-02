@@ -53,7 +53,7 @@ def login():
 
             login_user(User(user_id))
             print("[S] | " + time.strftime("%H:%M:%S") + " | User with name {} and ID {} was logged on".format(name, user_id))
-            return redirect(url_for('home'))
+            return redirect(url_for('family', id = session['user_id']))
     return render_template('login.html')
 
 @app.route('/logout/')
@@ -81,10 +81,27 @@ def signup():
             print("[S] | " + time.strftime("%H:%M:%S") + " | new user with username {} and email {} was added".format(username, email))
     return render_template('signup.html')
 
-@app.route('/myfamily/')
+@app.route('/createfamily')
 @login_required
-def family():
-    return render_template('family.html')
+def createFamily():
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+    cursor.execute('SELECT InFamily FROM Users WHERE UserID=' + user_id + ';')
+    InFamily = cursor.fetchone()[0]
+    
+    if InFamily == 1:
+        return render_template('alreadyinfamily.html')
+    else:
+        if request.method == 'POST':
+            return redirect(url_for('home'))
+        else:
+            return render_template('createfamily.html')
+            
+@app.route('/myfamily/<id>')
+@login_required
+def family(id):
+    return id
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

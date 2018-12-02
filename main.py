@@ -87,21 +87,41 @@ def createFamily():
     database = connect('FamilyCentral')
     cursor = database.cursor()    
     user_id = session['user_id']
-    cursor.execute('SELECT InFamily FROM Users WHERE UserID=' + user_id + ';')
-    InFamily = cursor.fetchone()[0]
+
+    cursor.execute('SELECT inFamily FROM Users WHERE UserID=' + user_id + ';')
+    inFamily = cursor.fetchone()[0]
     
-    if InFamily == 1:
+    if inFamily == 1:
         return render_template('alreadyinfamily.html')
     else:
         if request.method == 'POST':
             return redirect(url_for('home'))
         else:
+            #TODO
             return render_template('createfamily.html')
             
-@app.route('/myfamily/<id>')
+@app.route('/myfamily')
 @login_required
-def family(id):
-    return id
+def family():
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT InFamily FROM Users WHERE UserID=' + user_id + ';')
+    inFamily = cursor.fetchone()[0]
+
+    if inFamily == 0:
+        return redirect(url_for('home'))
+    else:
+        cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+        familyID = cursor.fetchone()[0]
+
+        return redirect(url_for('myfamily', familyID = familyID))
+
+@app.route('/myfamily/<familyID>')
+@login_required
+def familyPannel(familyID):
+    return render_template('family.html')
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

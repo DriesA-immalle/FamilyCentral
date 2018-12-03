@@ -53,7 +53,8 @@ def login():
 
             login_user(User(user_id))
             print("[S] | " + time.strftime("%H:%M:%S") + " | User with name {} and ID {} was logged on".format(name, user_id))
-            return redirect(url_for('family', id = session['user_id']))
+
+            return redirect(url_for('home'))
     return render_template('login.html')
 
 @app.route('/logout/')
@@ -99,30 +100,21 @@ def createFamily():
             return redirect(url_for('home'))
         else:
             return render_template('createfamily.html')
-            
-@app.route('/myfamily')
-@login_required
-def family():
-    database = connect('FamilyCentral')
-    cursor = database.cursor()    
-    user_id = session['user_id']
-
-    cursor.execute('SELECT InFamily FROM Users WHERE UserID=' + user_id + ';')
-    inFamily = cursor.fetchone()[0]
-
-    if inFamily == 0:
-        return redirect(url_for('home'))
-    else:
-        cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
-        familyID = cursor.fetchone()[0]
-        session['family_id'] = familyID
-
-        return redirect(url_for('myfamily', familyID = familyID))
 
 @app.route('/myfamily/<familyID>')
 @login_required
 def familyPannel(familyID):
-    return render_template('family.html')
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+
+    if familyID != str(SQLfamilyID):
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+    else:
+        return familyID
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

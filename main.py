@@ -116,7 +116,7 @@ def familyPannel(familyID):
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
         print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
-        return familyID
+        return render_template('family.html')
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

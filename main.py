@@ -37,7 +37,7 @@ def login():
         data = cursor.fetchall()
 
         if len(data) == 0:
-            print("[E] | " + time.strftime("%H:%M:%S") + " | incorrect credentials were inserted")
+            print(f"[E] Incorrect crentials (email: {email}) were inserted ")
         else:
             cursor.execute("SELECT UserID FROM USERS WHERE Email ='" + email + "' AND Password = '" + password + "';")
             user_id = cursor.fetchone()[0]
@@ -52,7 +52,7 @@ def login():
             session['email'] = email
 
             login_user(User(user_id))
-            print("[S] | " + time.strftime("%H:%M:%S") + " | User with name {} and ID {} was logged on".format(name, user_id))
+            print(f"[S] {session['username']} with ID {session['user_id']} was logged on")
 
             return redirect(url_for('home'))
     return render_template('login.html')
@@ -77,9 +77,9 @@ def signup():
         database.commit()
 
         if cursor.lastrowid == 0:
-            print("[E] | " + time.strftime("%H:%M:%S") + " | new user with name {} not inserted due to duplicate data".format(username))
+            print(f"[E] Duplicate data (email: {email} / username: {username}) was inserted")
         else:
-            print("[S] | " + time.strftime("%H:%M:%S") + " | new user with username {} and email {} was added".format(username, email))
+            print(f"[S] New user with email {email} was inserted")
     return render_template('signup.html')
 
 @app.route('/createfamily')
@@ -112,8 +112,10 @@ def familyPannel(familyID):
     SQLfamilyID = cursor.fetchone()[0]
 
     if familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
+        print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
         return familyID
 
 if __name__ == "__main__":

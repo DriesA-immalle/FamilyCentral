@@ -1,1 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather|Poppins|Roboto');
+
+body
+{
+    margin: 0;
+    width: 100%;
+}

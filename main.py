@@ -95,9 +95,9 @@ def createFamily():
         return render_template('alreadyinfamily.html')
     else:
         if request.method == 'POST':
+            #TODO          
             return redirect(url_for('home'))
         else:
-            #TODO
             return render_template('createfamily.html')
             
 @app.route('/myfamily')
@@ -115,6 +115,7 @@ def family():
     else:
         cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
         familyID = cursor.fetchone()[0]
+        session['family_id'] = familyID
 
         return redirect(url_for('myfamily', familyID = familyID))
 

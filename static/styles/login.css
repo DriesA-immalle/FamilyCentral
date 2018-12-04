@@ -19,6 +19,23 @@ html
     text-align: center;
 }
 
+.top-right button
+{
+    background-color: transparent;
+    border: none;
+    font-family: 'Merriweather';
+    font-size: 25px;
+    outline: none;
+    transition: all 0.4s;
+    margin-left: 98%;
+}
+
+.top-right button:hover
+{
+    transition: all 0.4s;
+    transform: rotate(360deg);
+}
+
 h1
 {
     font-family: 'Merriweather';

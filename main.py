@@ -91,19 +91,25 @@ def createFamily():
 
     cursor.execute('SELECT inFamily FROM Users WHERE UserID=' + user_id + ';')
     inFamily = cursor.fetchone()[0]
-    # ADD DATA TO ACCOUNTS YOU _._
+
     if inFamily == 1:
         return render_template('alreadyinfamily.html')
     else:
         if request.method == 'POST':
             familyName = request.form['familyName']    
-            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName) Values ("' + familyName + '");')  
+            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName, FamilyAdminID) Values ("' + familyName + '","' + user_id + '");')  
 
             if cursor.lastrowid == 0:
                 print(f"[E] Duplicate name (familyname: {familyName}) was not inserted")
                 return redirect(url_for('home'))
             else:
                 print(f"[S] New family with name {familyName} was inserted")
+
+                cursor.execute('SELECT FamilyID FROM Families WHERE FamilyName=' + familyName + ';')
+                SQLFamilyID = cursor.fetchone()[0]
+
+                cursor.execute('UPDATE USERS SET InFamily=1 AND FamilyID=' + SQLFamilyID + ' WHERE user_id=' + user_id + ';')
+
                 return render_template('createfamily.html')
         return render_template('createfamily.html')
     return render_template('createfamily.html')
@@ -117,8 +123,11 @@ def familyPannel(familyID):
 
     cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
-
-    if familyID != str(SQLfamilyID):
+    print(SQLfamilyID)
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('home'))
+    elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
@@ -140,16 +149,16 @@ def adminPannel(familyID):
 
     if familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
-        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+        return redirect(url_for('adminPannel', familyID = SQLfamilyID))
     elif str(SQLAdminID) != str(user_id):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
-        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + SQLfamilyID + ';')
+        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
-    app.run(debug=1, host='0.0.0.0')
+    app.run(debug=1)

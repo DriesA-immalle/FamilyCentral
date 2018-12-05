@@ -124,6 +124,29 @@ def familyPannel(familyID):
         print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
         return render_template('family.html')
 
+@app.route('/myadmin/<familyID>')
+@login_required
+def adminPannel(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']   
+
+    cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+
+    cursor.execute('SELECT FamilyAdminID FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+    SQLAdminID = cursor.fetchone()[0]
+
+    if familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+    elif SQLAdminID != user_id:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+    else:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
+        return render_template('familyAdminpannel.html')
+
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
     app.run(debug=1, host='0.0.0.0')

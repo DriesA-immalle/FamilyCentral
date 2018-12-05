@@ -24,7 +24,7 @@ def redirectRootToHome():
 def home():
     return render_template('home.html')
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login/', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
         database = connect('FamilyCentral')
@@ -63,7 +63,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/signup', methods=['GET','POST'])
+@app.route('/signup/', methods=['GET','POST'])
 def signup():
     if request.method == 'POST':
         database = connect('FamilyCentral')
@@ -82,7 +82,7 @@ def signup():
             print(f"[S] New user with email {email} was inserted")
     return render_template('signup.html')
 
-@app.route('/createfamily')
+@app.route('/createfamily/')
 @login_required
 def createFamily():
     database = connect('FamilyCentral')
@@ -96,9 +96,15 @@ def createFamily():
         return render_template('alreadyinfamily.html')
     else:
         if request.method == 'POST':
-            #TODO          
+            familyName = request.form['familyName']    
+
+            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName) Values ("' + familyName + '";')  
+
+            if cursor.lastrowid == 0:
+                print(f"[E] Duplicate name (familyname: {familyName}) was inserted")
             return redirect(url_for('home'))
         else:
+            print(f"[S] New family with name {familyName} was inserted")
             return render_template('createfamily.html')
 
 @app.route('/myfamily/<familyID>')

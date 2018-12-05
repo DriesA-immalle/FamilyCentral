@@ -82,7 +82,7 @@ def signup():
             print(f"[S] New user with email {email} was inserted")
     return render_template('signup.html')
 
-@app.route('/createfamily/')
+@app.route('/createfamily/', methods=['GET','POST'])
 @login_required
 def createFamily():
     database = connect('FamilyCentral')
@@ -91,21 +91,22 @@ def createFamily():
 
     cursor.execute('SELECT inFamily FROM Users WHERE UserID=' + user_id + ';')
     inFamily = cursor.fetchone()[0]
-    
+    # ADD DATA TO ACCOUNTS YOU _._
     if inFamily == 1:
         return render_template('alreadyinfamily.html')
     else:
         if request.method == 'POST':
             familyName = request.form['familyName']    
-
-            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName) Values ("' + familyName + '";')  
+            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName) Values ("' + familyName + '");')  
 
             if cursor.lastrowid == 0:
-                print(f"[E] Duplicate name (familyname: {familyName}) was inserted")
-            return redirect(url_for('home'))
-        else:
-            print(f"[S] New family with name {familyName} was inserted")
-            return render_template('createfamily.html')
+                print(f"[E] Duplicate name (familyname: {familyName}) was not inserted")
+                return redirect(url_for('home'))
+            else:
+                print(f"[S] New family with name {familyName} was inserted")
+                return render_template('createfamily.html')
+        return render_template('createfamily.html')
+    return render_template('createfamily.html')
 
 @app.route('/myfamily/<familyID>')
 @login_required
@@ -144,7 +145,7 @@ def adminPannel(familyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
-        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + SQLfamilyID + ';')
         SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)

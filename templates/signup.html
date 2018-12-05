@@ -15,11 +15,11 @@
         <h1>Welcome</h1>
         <img src="{{ url_for('static', filename='login.png') }}">
         <form name="signup-form" method="POST" autocomplete="off">
-            <input type="text" name="email" max="100" placeholder="A Valid Email Address">
+            <input type="text" name="email" max="100" minlength="4" required placeholder="A Valid Email Address">
             <br>
-            <input type="text" name="username" minlength="4" maxlength="50" placeholder="A Username">
+            <input type="text" name="username" minlength="4" maxlength="50" required placeholder="A Username">
             <br>
-            <input type="password" name="password" minlength="4" maxlength="50" placeholder="A Secure Password">
+            <input type="password" name="password" minlength="4" maxlength="50" required placeholder="A Secure Password">
             <br>
             <input type="submit" value="Signup">
         </form>

@@ -126,4 +126,4 @@ def familyPannel(familyID):
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
-    app.run(debug=1)
+    app.run(debug=1, host='0.0.0.0')

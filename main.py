@@ -140,12 +140,14 @@ def adminPannel(familyID):
     if familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
-    elif SQLAdminID != user_id:
+    elif str(SQLAdminID) != str(user_id):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
+        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
-        return render_template('familyAdminpannel.html')
+        return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

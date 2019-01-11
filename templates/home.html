@@ -10,6 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
+    <ul>
+        <li><a href="home">Home</a></li>
+        {% if current_user.is_authenticated %}
+            <li style="float:right"><a href="myfamily/0">Your Family</a></li>
+        {% else %}
+            <li style="float:right"><a href="login">Login</a></li>
+        {% endif %}
+    </ul>
 </body>
 </html>

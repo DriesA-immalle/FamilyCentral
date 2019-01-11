@@ -1,5 +1,5 @@
 from flask import *
-from flask_login import login_required, login_url, login_user, LoginManager, UserMixin, logout_user, current_user, AnonymousUserMixin
+from flask_login import login_required, login_url, login_user, LoginManager, UserMixin, logout_user, current_user, AnonymousUserMixin, current_user
 from sqlite3 import connect, Cursor
 import time
 
@@ -22,7 +22,7 @@ def redirectRootToHome():
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user = current_user)
 
 @app.route('/login/', methods=['GET','POST'])
 def login():
@@ -123,7 +123,6 @@ def familyPannel(familyID):
 
     cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
-    print(SQLfamilyID)
     if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
         return redirect(url_for('home'))
@@ -131,8 +130,10 @@ def familyPannel(familyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
+        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
-        return render_template('family.html')
+        return render_template('family.html', familyName = SQLFamilyName)
 
 @app.route('/myadmin/<familyID>')
 @login_required

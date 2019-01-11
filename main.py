@@ -135,7 +135,7 @@ def familyPannel(familyID):
         print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
         return render_template('family.html', familyName = SQLFamilyName)
 
-@app.route('/myadmin/<familyID>')
+@app.route('/myfamily/<familyID>/admin')
 @login_required
 def adminPannel(familyID):
     database = connect('FamilyCentral')

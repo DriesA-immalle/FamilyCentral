@@ -93,7 +93,12 @@ def createFamily():
     inFamily = cursor.fetchone()[0]
 
     if inFamily == 1:
-        return render_template('alreadyinfamily.html')
+        cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+        SQLfamilyID = cursor.fetchone()[0]
+
+        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLfamily = cursor.fetchone()[0]
+        return render_template('alreadyinfamily.html', family = SQLfamily)
     else:
         if request.method == 'POST':
             familyName = request.form['familyName']    

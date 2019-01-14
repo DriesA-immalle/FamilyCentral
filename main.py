@@ -92,7 +92,7 @@ def createFamily():
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLFamilyID = cursor.fetchone()[0]
 
-    if SQLFamilyID != 0:
+    if SQLFamilyID != None:
         print(f"[E] User with ID {user_id} is already part of a family")
         return redirect(url_for('familyPannel', familyID = SQLFamilyID))
     else:
@@ -109,8 +109,9 @@ def createFamily():
                 
                 cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + FamilyName + '";')
                 SQLFamilyID = cursor.fetchone()[0]
-                print(SQLFamilyID)
+
                 cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
+                cursor.execute('UPDATE User SET IsAdmin="1" WHERE UserID="' + str(user_id) + '";')
                 database.commit()
     return render_template('createfamily.html')
 
@@ -123,7 +124,7 @@ def familyPannel(familyID):
 
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
-    if SQLfamilyID == '':
+    if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
         return redirect(url_for('home'))
     elif familyID != str(SQLfamilyID):
@@ -147,11 +148,10 @@ def adminPannel(familyID):
 
     cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
     SQLIsAdmin = cursor.fetchone()[0]
-
     if familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
         return redirect(url_for('adminPannel', familyID = SQLfamilyID))
-    elif SQLIsAdmin != 0:
+    elif SQLIsAdmin == 0:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:

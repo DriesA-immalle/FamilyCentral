@@ -92,31 +92,26 @@ def createFamily():
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLFamilyID = cursor.fetchone()[0]
 
-    if SQLFamilyID != None:
-        cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
-        SQLfamilyID = cursor.fetchone()[0]
-
-        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
-        SQLfamily = cursor.fetchone()[0]
-        return render_template('alreadyinfamily.html', family = SQLfamily)
+    if SQLFamilyID != 0:
+        print(f"[E] User with ID {user_id} is already part of a family")
+        return redirect(url_for('familyPannel', familyID = SQLFamilyID))
     else:
         if request.method == 'POST':
-            familyName = request.form['familyName']    
-            cursor.execute('INSERT OR IGNORE INTO Family (FamilyName) Values ("' + familyName + '");') 
+            FamilyName = request.form['familyName']
+
+            cursor.execute('INSERT OR IGNORE INTO Family(FamilyName) VALUES("' + FamilyName + '");')
             database.commit()
+
             if cursor.lastrowid == 0:
-                print(f"[E] Duplicate name (familyname: {familyName}) was not inserted")
-                return redirect(url_for('home'))
-            else:
-                print(f"[S] New family with name {familyName} was inserted")
-
-                cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + familyName + '";')
-                SQLFamilyID = cursor.fetchone()[0]
-
-                cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
+                print(f"[E] Duplicate data (name: {FamilyName}) was not inserted")
+            else: 
+                print(f"[S] New family (name: {FamilyName}) was inserted")
                 
-                return render_template('home.html')
-        return render_template('createfamily.html')
+                cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + FamilyName + '";')
+                SQLFamilyID = cursor.fetchone()[0]
+                print(SQLFamilyID)
+                cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
+                database.commit()
     return render_template('createfamily.html')
 
 @app.route('/myfamily/<familyID>')
@@ -128,7 +123,7 @@ def familyPannel(familyID):
 
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
-    if SQLfamilyID == None:
+    if SQLfamilyID == '':
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
         return redirect(url_for('home'))
     elif familyID != str(SQLfamilyID):

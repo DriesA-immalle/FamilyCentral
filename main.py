@@ -33,21 +33,21 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM USERS WHERE Email='" + email + "' AND Password='" + password + "';")
+        cursor.execute("SELECT * FROM User WHERE Email='" + email + "' AND Password='" + password + "';")
         data = cursor.fetchall()
 
         if len(data) == 0:
-            print(f"[E] Incorrect crentials (email: {email}) were inserted ")
+            print(f"[E] Incorrect credentials (email: {email}) were inserted ")
         else:
-            cursor.execute("SELECT UserID FROM USERS WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT UserID FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
             user_id = cursor.fetchone()[0]
             session['user_id'] = user_id
 
-            cursor.execute("SELECT Username FROM USERS WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT Username FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
             name = cursor.fetchone()[0]
             session['username'] = name
 
-            cursor.execute("SELECT Email FROM USERS WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT Email FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
             email = cursor.fetchone()[0]
             session['email'] = email
 
@@ -73,7 +73,7 @@ def signup():
         username = request.form['username']
         password = request.form['password']
 
-        cursor.execute('INSERT OR IGNORE INTO Users (username, email, password) VALUES ("' + username + '","' + email + '","' + password + '");')
+        cursor.execute('INSERT OR IGNORE INTO User (username, email, password) VALUES ("' + username + '","' + email + '","' + password + '");')
         database.commit()
 
         if cursor.lastrowid == 0:
@@ -89,33 +89,33 @@ def createFamily():
     cursor = database.cursor()    
     user_id = session['user_id']
 
-    cursor.execute('SELECT inFamily FROM Users WHERE UserID=' + user_id + ';')
-    inFamily = cursor.fetchone()[0]
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLFamilyID = cursor.fetchone()[0]
 
-    if inFamily == 1:
-        cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+    if SQLFamilyID != None:
+        cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
         SQLfamilyID = cursor.fetchone()[0]
 
-        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLfamily = cursor.fetchone()[0]
         return render_template('alreadyinfamily.html', family = SQLfamily)
     else:
         if request.method == 'POST':
             familyName = request.form['familyName']    
-            cursor.execute('INSERT OR IGNORE INTO Families (FamilyName, FamilyAdminID) Values ("' + familyName + '","' + user_id + '");')  
-
+            cursor.execute('INSERT OR IGNORE INTO Family (FamilyName) Values ("' + familyName + '");') 
+            database.commit()
             if cursor.lastrowid == 0:
                 print(f"[E] Duplicate name (familyname: {familyName}) was not inserted")
                 return redirect(url_for('home'))
             else:
                 print(f"[S] New family with name {familyName} was inserted")
 
-                cursor.execute('SELECT FamilyID FROM Families WHERE FamilyName=' + familyName + ';')
+                cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + familyName + '";')
                 SQLFamilyID = cursor.fetchone()[0]
 
-                cursor.execute('UPDATE USERS SET InFamily=1 AND FamilyID=' + SQLFamilyID + ' WHERE user_id=' + user_id + ';')
-
-                return render_template('createfamily.html')
+                cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
+                
+                return render_template('home.html')
         return render_template('createfamily.html')
     return render_template('createfamily.html')
 
@@ -126,7 +126,7 @@ def familyPannel(familyID):
     cursor = database.cursor()    
     user_id = session['user_id']
 
-    cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
     if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
@@ -135,7 +135,7 @@ def familyPannel(familyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
-        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
         return render_template('family.html', familyName = SQLFamilyName)
@@ -147,20 +147,20 @@ def adminPannel(familyID):
     cursor = database.cursor()    
     user_id = session['user_id']   
 
-    cursor.execute('SELECT FamilyID FROM Users WHERE UserID=' + user_id + ';')
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
 
-    cursor.execute('SELECT FamilyAdminID FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
-    SQLAdminID = cursor.fetchone()[0]
+    cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
+    SQLIsAdmin = cursor.fetchone()[0]
 
     if familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
         return redirect(url_for('adminPannel', familyID = SQLfamilyID))
-    elif str(SQLAdminID) != str(user_id):
+    elif SQLIsAdmin != 0:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
-        cursor.execute('SELECT FamilyName FROM Families WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
         print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)

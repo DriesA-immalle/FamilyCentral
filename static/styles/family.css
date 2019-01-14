@@ -8,37 +8,37 @@ body
 
 ul 
 {
-list-style-type: none;
-margin: 0;
-margin-bottom: 25px;
-padding: 0;
-overflow: hidden;
-background-color: #333;
+    list-style-type: none;
+    margin: 0;
+    margin-bottom: 25px;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    font-family: 'Roboto';
 }
 
 li 
 {
-float: left;
+    float: left;
 }
 
 li a 
 {
-display: block;
-color: white;
-text-align: center;
-padding: 14px 16px;
-text-decoration: none;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
 }
 
 li a:hover 
 {
-background-color: #111;
+    background-color: #111;
 }
 
 .wrapper
 {
     width: 80%;
-    border: 1px solid black;
     overflow: hidden;
     margin-left: auto;
     margin-right: auto;
@@ -47,8 +47,9 @@ background-color: #111;
 .first
 {
     width: 48%;
+    height: 50vh;
     float: left;
-
+    border-radius: 2vw;
     background-color: blue;
 }
 
@@ -56,6 +57,8 @@ background-color: #111;
 {
     float: right;
     width: 48%;
+    height: 50vh;
     margin-left: 4%;
+    border-radius: 2vw;
     background-color: red;
 }

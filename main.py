@@ -38,6 +38,7 @@ def login():
 
         if len(data) == 0:
             print(f"[E] Incorrect credentials (email: {email}) were inserted ")
+            return render_template('login.html', Message = 'Unknown email and password combination')
         else:
             cursor.execute("SELECT UserID FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
             user_id = cursor.fetchone()[0]
@@ -78,6 +79,7 @@ def signup():
 
         if cursor.lastrowid == 0:
             print(f"[E] Duplicate data (email: {email} / username: {username}) was inserted")
+            return render_template('signup.html', Message='That email address or username is already in use')
         else:
             print(f"[S] New user with email {email} was inserted")
     return render_template('signup.html')
@@ -113,6 +115,7 @@ def createFamily():
                 cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
                 cursor.execute('UPDATE User SET IsAdmin="1" WHERE UserID="' + str(user_id) + '";')
                 database.commit()
+                return redirect(url_for('familyPannel', familyID = SQLFamilyID))
     return render_template('createfamily.html')
 
 @app.route('/myfamily/<familyID>')

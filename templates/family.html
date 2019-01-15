@@ -6,20 +6,33 @@
     <title>{{familyName}}</title>
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/family.css') }}" />
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <ul>
         <li><a href="/home">Home</a></li>
-        <li style="float:right"><a href="/logout">Logout</a></li>
+        <li><a href="/logout">Logout</a></li>
     </ul>
     <div class="wrapper">
         <div class="first">
-            <h1>Shopping List</h1>
+            <table style="width:100%">
+                <thead>
+                    <h1>Shopping List</h1>
+                    <tr>
+                        <th>Item</th>
+                        <th>Added by</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
         <div class="second">
-            <h1>Upcomming events</h1>
+            <table>
+                <tr><h1>Upcomming events</h1></tr>
+            </table>
         </div>
     </div>   
 </body>

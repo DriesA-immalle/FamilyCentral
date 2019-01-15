@@ -15,10 +15,13 @@
         <h1>Welcome</h1>
         <img src="{{ url_for('static', filename='login.png') }}">
         <form name="login-form" method="POST" autocomplete="off">
-            <input type="text" name="email" placeholder="Your Email Address" required>
+            <input type="email" name="email" placeholder="Your Email Address" required>
             <br>
             <input type="password" name="password" placeholder="Your Password" required>
             <br>
+            <div class="message">
+                {{Message}}
+            </div>
             <input type="submit" value="Login">
         </form>
     </div>

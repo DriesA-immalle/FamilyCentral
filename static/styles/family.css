@@ -10,24 +10,20 @@ ul
 {
     list-style-type: none;
     margin: 0;
-    margin-bottom: 25px;
     padding: 0;
-    overflow: hidden;
-    background-color: #333;
+    width: 15%;
+    background-color: #f1f1f1;
+    height: 100%; 
+    position: fixed; 
+    overflow: auto; 
     font-family: 'Roboto';
-}
-
-li 
-{
-    float: left;
 }
 
 li a 
 {
     display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
+    color: #000;
+    padding: 8px 16px;
     text-decoration: none;
 }
 
@@ -38,27 +34,43 @@ li a:hover
 
 .wrapper
 {
-    width: 80%;
+    width: 70%;
     overflow: hidden;
-    margin-left: auto;
+    margin-left: 23%;
     margin-right: auto;
+    
 }
 
 .first
 {
-    width: 48%;
+    width: 46%;
     height: 50vh;
     float: left;
-    border-radius: 2vw;
-    background-color: blue;
+    border-radius: 1vw;
+    margin-top: 4%;
+    border: 2px solid #e1e4e8;
+    overflow-y: scroll
+
 }
 
 .second
 {
     float: right;
-    width: 48%;
+    width: 46%;
     height: 50vh;
     margin-left: 4%;
-    border-radius: 2vw;
-    background-color: red;
+    border-radius: 1vw;
+    margin-top: 4%;
+    border: 2px solid #e1e4e8;
+
+}
+
+.first h1
+{
+    text-align: center;
+}
+
+.second h1
+{
+    text-align: center;
 }

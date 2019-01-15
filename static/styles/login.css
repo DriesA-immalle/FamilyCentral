@@ -3,6 +3,7 @@
 html
 {
     width: 100%;
+    font-family: 'Roboto';
 }
 
 .centered
@@ -59,7 +60,7 @@ img
     -ms-user-select: none;
 }
 
-input[type="text"], input[type="password"]
+input[type="email"], input[type="password"]
 {
     width: 250px;
     margin-bottom: 7%;
@@ -75,7 +76,7 @@ input[type="text"], input[type="password"]
     transition: all 0.4s;
 }
 
-input[type="text"]:focus, input[type="password"]:focus
+input[type="email"]:focus, input[type="password"]:focus
 {
     padding-bottom: 4%;
     border-bottom: 1.5px solid #34424F;
@@ -98,3 +99,20 @@ input[type="submit"]:hover
     width: 120px;
     transition: all 0.4s;
 }
+
+.message
+{
+    color: red;
+    margin-bottom: 1vw;
+    animation: fade-in 1s;
+}
+
+@keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  

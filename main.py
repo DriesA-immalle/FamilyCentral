@@ -2,11 +2,13 @@ from flask import *
 from flask_login import login_required, login_url, login_user, LoginManager, UserMixin, logout_user, current_user, AnonymousUserMixin, current_user
 from sqlite3 import connect, Cursor
 import time
+import hashlib
 
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+hash = hashlib.sha256()
 
 class User(UserMixin):
   def __init__(self,id):
@@ -33,22 +35,30 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM User WHERE Email='" + email + "' AND Password='" + password + "';")
+        if ' ' in email or ';' in email:
+            print(f"[E] Possible attempt to SQL INJECTION")
+            return render_template('login.html', Message='That user does not exist')
+
+        hash.update(password.encode('utf-8'))
+        hashed = hash.hexdigest()
+        print(hashed)
+        print(email)
+        cursor.execute("SELECT * FROM User WHERE Email='" + email + "' AND Password='" + hashed + "';")
         data = cursor.fetchall()
 
         if len(data) == 0:
             print(f"[E] Incorrect credentials (email: {email}) were inserted ")
             return render_template('login.html', Message = 'Unknown email and password combination')
         else:
-            cursor.execute("SELECT UserID FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT UserID FROM User WHERE Email ='" + email + "' AND Password = '" + hashed + "';")
             user_id = cursor.fetchone()[0]
             session['user_id'] = user_id
 
-            cursor.execute("SELECT Username FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT Username FROM User WHERE Email ='" + email + "' AND Password = '" + hashed + "';")
             name = cursor.fetchone()[0]
             session['username'] = name
 
-            cursor.execute("SELECT Email FROM User WHERE Email ='" + email + "' AND Password = '" + password + "';")
+            cursor.execute("SELECT Email FROM User WHERE Email ='" + email + "' AND Password = '" + hashed + "';")
             email = cursor.fetchone()[0]
             session['email'] = email
 
@@ -74,7 +84,14 @@ def signup():
         username = request.form['username']
         password = request.form['password']
 
-        cursor.execute('INSERT OR IGNORE INTO User (username, email, password) VALUES ("' + username + '","' + email + '","' + password + '");')
+        if ' ' in username or ';' in username or ' ' in email or ';' in email:
+            print(f"[E] Possible attempt to SQL INJECTION")
+            return render_template('signup.html', Message='Only letters are allowed!')
+
+        hash.update(password.encode('utf-8'))
+        hashed = hash.hexdigest()
+
+        cursor.execute('INSERT OR IGNORE INTO User (username, email, password) VALUES ("' + username + '","' + email + '","' + hashed + '");')
         database.commit()
 
         if cursor.lastrowid == 0:
@@ -100,6 +117,9 @@ def createFamily():
     else:
         if request.method == 'POST':
             FamilyName = request.form['familyName']
+
+            if ' ' or ';' in FamilyName:
+                return render_template('createfamily.html', Message='Only letters are allowed!')
 
             cursor.execute('INSERT OR IGNORE INTO Family(FamilyName) VALUES("' + FamilyName + '");')
             database.commit()

@@ -5,3 +5,19 @@ body
     margin: 0;
     width: 100%;
 }
+
+.message
+{
+    color: red;
+    margin-bottom: 1vw;
+    animation: fade-in 1s;
+}
+
+@keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }

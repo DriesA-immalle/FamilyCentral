@@ -32,7 +32,7 @@ def login():
         cursor = database.cursor()
         hash = hashlib.sha256()
 
-        email = request.form['email']
+        email = request.form['email']   
         password = request.form['password']
 
         if ' ' in email or ';' in email:
@@ -103,6 +103,7 @@ def signup():
             return render_template('signup.html', Message='That email address or username is already in use')
         else:
             print(f"[S] New user with email {email} was inserted")
+            return(redirect(url_for('login')))
     return render_template('signup.html')
 
 @app.route('/createfamily/', methods=['GET','POST'])
@@ -122,7 +123,7 @@ def createFamily():
         if request.method == 'POST':
             FamilyName = request.form['familyName']
 
-            if ' ' or ';' in FamilyName:
+            if ';' in FamilyName:
                 return render_template('createfamily.html', Message='Only letters are allowed!')
 
             cursor.execute('INSERT OR IGNORE INTO Family(FamilyName) VALUES("' + FamilyName + '");')
@@ -153,7 +154,7 @@ def familyPannel(familyID):
     SQLfamilyID = cursor.fetchone()[0]
     if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
-        return redirect(url_for('home'))
+        return redirect(url_for('createFamily'))
     elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
@@ -175,7 +176,9 @@ def adminPannel(familyID):
 
     cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
     SQLIsAdmin = cursor.fetchone()[0]
-    if familyID != str(SQLfamilyID):
+    if familyID != None:
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
         return redirect(url_for('adminPannel', familyID = SQLfamilyID))
     elif SQLIsAdmin == 0:

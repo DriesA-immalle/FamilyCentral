@@ -8,7 +8,6 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-hash = hashlib.sha256()
 
 class User(UserMixin):
   def __init__(self,id):
@@ -31,6 +30,7 @@ def login():
     if request.method == 'POST':
         database = connect('FamilyCentral')
         cursor = database.cursor()
+        hash = hashlib.sha256()
 
         email = request.form['email']
         password = request.form['password']
@@ -79,6 +79,7 @@ def signup():
     if request.method == 'POST':
         database = connect('FamilyCentral')
         cursor = database.cursor()
+        hash = hashlib.sha256()
 
         email = request.form['email']
         username = request.form['username']
@@ -90,6 +91,9 @@ def signup():
 
         hash.update(password.encode('utf-8'))
         hashed = hash.hexdigest()
+
+        print(hashed)
+        print(email)
 
         cursor.execute('INSERT OR IGNORE INTO User (username, email, password) VALUES ("' + username + '","' + email + '","' + hashed + '");')
         database.commit()
@@ -185,4 +189,4 @@ def adminPannel(familyID):
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
-    app.run(debug=1)
+    app.run(debug=1, host='0.0.0.0')

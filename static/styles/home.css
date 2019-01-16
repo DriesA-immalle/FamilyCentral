@@ -1,36 +1,78 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather|Poppins|Roboto');
 
-body
+body, html 
 {
+    height: 100%;
     margin: 0;
-    width: 100%;
 }
 
-ul 
+.hero-image 
 {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    font-family: 'Roboto';
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/static/img/city.jpg");
+
+    height: 100%;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    background-attachment: fixed;
 }
 
-li 
+.hero-text 
 {
-    float: left;
-}
-
-li a 
-{
-    display: block;
-    color: white;
     text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-shadow: 1px 1px 2px #000000;
+    font-family: 'Poppins';
 }
 
-li a:hover 
+.hero-text h1
 {
-    background-color: #111;
+    font-size: 5vh;
 }
+
+.hero-text i
+{
+    font-size: 7vh;
+}
+
+.pulsate-fwd {
+	-webkit-animation: pulsate-fwd 0.5s ease-in-out infinite both;
+	        animation: pulsate-fwd 0.5s ease-in-out infinite both;
+}
+
+@-webkit-keyframes pulsate-fwd {
+    0% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+    }
+    50% {
+      -webkit-transform: scale(1.1);
+              transform: scale(1.1);
+    }
+    100% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+    }
+  }
+  @keyframes pulsate-fwd {
+    0% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+    }
+    50% {
+      -webkit-transform: scale(1.1);
+              transform: scale(1.1);
+    }
+    100% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+    }
+  }
+  
+  

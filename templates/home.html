@@ -6,19 +6,21 @@
     <title>Home</title>
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/home.css') }}" />
-    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <ul>
-        <li><a href="home">Home</a></li>
-        {% if current_user.is_authenticated %}
-        <li style="float:right"><a href="logout">Logout</a></li>    
-        <li style="float:right"><a href="myfamily/0">Your Family</a></li>
-        {% else %}
-            <li style="float:right"><a href="login">Login</a></li>
-            <li style="float:right"><a href="signup">Sign up</a></li>
-        {% endif %}
-    </ul>
+    <div class="hero-image">
+        <div class="hero-text">
+            <h1>Tomorrow's planning, Today</h1>
+            <h2>with Family Central</h2>
+            <i class="fas fa-angle-double-down pulsate-fwd"></i>
+        </div>
+
+    </div>
+    <div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos expedita esse itaque ut tempora numquam ratione, nemo facere ipsa, quae tenetur aliquam, labore ad earum eaque inventore eveniet soluta consectetur!
+    </div>
 </body>
 </html>

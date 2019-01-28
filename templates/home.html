@@ -11,16 +11,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <div class="hero-image">
-        <div class="hero-text">
-            <h1>Tomorrow's planning, Today</h1>
-            <h2>with Family Central</h2>
-            <i class="fas fa-angle-double-down pulsate-fwd"></i>
-        </div>
-
-    </div>
-    <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos expedita esse itaque ut tempora numquam ratione, nemo facere ipsa, quae tenetur aliquam, labore ad earum eaque inventore eveniet soluta consectetur!
-    </div>
+    <ul>
+        <li><a href="home">Home</a></li>
+        {% if current_user.is_authenticated %}
+        <li style="float:right"><a href="logout">Logout</a></li>    
+        <li style="float:right"><a href="myfamily/0">Your Family</a></li>
+        {% else %}
+            <li style="float:right"><a href="login">Login</a></li>
+            <li style="float:right"><a href="signup">Sign up</a></li>
+        {% endif %}
+    </ul>
 </body>
 </html>

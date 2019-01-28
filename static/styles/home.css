@@ -6,73 +6,31 @@ body, html
     margin: 0;
 }
 
-.hero-image 
+ul 
 {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/static/img/city.jpg");
-
-    height: 100%;
-
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    background-attachment: fixed;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    font-family: 'Roboto';
 }
 
-.hero-text 
+li 
 {
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    float: left;
+}
+
+li a 
+{
+    display: block;
     color: white;
-    text-shadow: 1px 1px 2px #000000;
-    font-family: 'Poppins';
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
 }
 
-.hero-text h1
+li a:hover 
 {
-    font-size: 5vh;
+    background-color: #111;
 }
-
-.hero-text i
-{
-    font-size: 7vh;
-}
-
-.pulsate-fwd {
-	-webkit-animation: pulsate-fwd 0.5s ease-in-out infinite both;
-	        animation: pulsate-fwd 0.5s ease-in-out infinite both;
-}
-
-@-webkit-keyframes pulsate-fwd {
-    0% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-    50% {
-      -webkit-transform: scale(1.1);
-              transform: scale(1.1);
-    }
-    100% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-  }
-  @keyframes pulsate-fwd {
-    0% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-    50% {
-      -webkit-transform: scale(1.1);
-              transform: scale(1.1);
-    }
-    100% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-  }
-  
-  

@@ -38,8 +38,12 @@ li a:hover
     width: 70%;
     overflow: hidden;
     margin-left: 23%;
-    margin-right: auto;
-    
+    margin-right: auto;    
+}
+
+.wrapper h1
+{
+    text-align: center;
 }
 
 .first

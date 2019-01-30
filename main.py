@@ -143,6 +143,27 @@ def createFamily():
                 return redirect(url_for('familyPannel', familyID = SQLFamilyID))
     return render_template('createfamily.html')
 
+@app.route('/deletefamily/')
+@login_required
+def deleteFamily():
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLFamilyID = cursor.fetchone()[0]
+
+    if SQLFamilyID == None:
+        print(f"[E] User with ID {user_id} is not part of a family")
+        return redirect(url_for('home'))
+    else:
+        cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
+        cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+        cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+        database.commit()
+        return redirect(url_for('home'))
+
+
 @app.route('/myfamily/<familyID>')
 @login_required
 def familyPannel(familyID):
@@ -161,7 +182,7 @@ def familyPannel(familyID):
     else:
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
-        print(f"[E] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
+        print(f"[S] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
         return render_template('family.html', familyName = SQLFamilyName)
 
 @app.route('/myfamily/<familyID>/admin')

@@ -164,7 +164,7 @@ def deleteFamily():
         database.commit()
         return redirect(url_for('home'))
 
-@app.route('/myfamily/<familyID>/addmember')
+@app.route('/myfamily/<familyID>/addmember', methods=['GET', 'POST'])
 @login_required
 def addMember(familyID):
     database = connect('FamilyCentral')
@@ -177,6 +177,20 @@ def addMember(familyID):
     if familyID != str(SQLFamilyID):
         return redirect(url_for('addMember', familyID = SQLFamilyID))
     else:
+        if request.method == 'POST':
+            email = request.form['email']
+
+            cursor.execute('SELECT * FROM User WHERE Email="' + str(email) + '";')
+            data = cursor.fetchall()
+
+            if len(data) == 0:
+                return render_template('addMember.html', Message = "We don't know that email")
+            else:
+                cursor.execute('SELECT FamilyID FROM User WHERE Email="' + str(email) + '";')
+                SQLFamilyID = cursor.fetchall()
+
+                if SQLFamilyID != None:
+                    return render_template('addMember.html', Message = "That user is already part of a family")
         return render_template('addMember.html')
 
 @app.route('/myfamily/<familyID>')
@@ -228,4 +242,4 @@ def adminPannel(familyID):
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
-    app.run(debug=1, host='0.0.0.0')
+    app.run(debug=1)

@@ -1,8 +1,11 @@
 # FamilyCentral
 Start of a Python Web Application
 ---
-Entity Relationships in an early build.
-![ER Sheme](https://i.postimg.cc/ZYDwvhX0/ERWebApp.png)
+## Entity Relationships in an early build.
+![ER Scheme](https://i.postimg.cc/ZYDwvhX0/ERWebApp.png)
+
+## Update of Entity Relationships
+![ER Scheme](https://i.postimg.cc/XNx8R3kD/Untitled-Diagram.png)
 
 ## Commit History
 **2987ecb**6f7743bac1d4926b983c819beab1ecf61

@@ -157,12 +157,27 @@ def deleteFamily():
         print(f"[E] User with ID {user_id} is not part of a family")
         return redirect(url_for('home'))
     else:
+        print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
         cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
         cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
         cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
         database.commit()
         return redirect(url_for('home'))
 
+@app.route('/myfamily/<familyID>/addmember')
+@login_required
+def addMember(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLFamilyID = cursor.fetchone()[0]
+
+    if familyID != str(SQLFamilyID):
+        return redirect(url_for('addMember', familyID = SQLFamilyID))
+    else:
+        return render_template('addMember.html')
 
 @app.route('/myfamily/<familyID>')
 @login_required

@@ -153,15 +153,21 @@ def deleteFamily():
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLFamilyID = cursor.fetchone()[0]
 
+    cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + user_id + ';')
+    SQLIsAdmin = cursor.fetchone()[0]
+
     if SQLFamilyID == None:
         print(f"[E] User with ID {user_id} is not part of a family")
         return redirect(url_for('home'))
     else:
-        print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
-        cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
-        cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
-        cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
-        database.commit()
+        if SQLIsAdmin == 0:
+            return redirect(url_for('familyPannel', familyID = SQLFamilyID))
+        else:
+            print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
+            cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
+            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+            database.commit()
         return redirect(url_for('home'))
 
 @app.route('/myfamily/<familyID>/addmember', methods=['GET', 'POST'])
@@ -189,8 +195,21 @@ def addMember(familyID):
                 cursor.execute('SELECT FamilyID FROM User WHERE Email="' + str(email) + '";')
                 SQLFamilyID = cursor.fetchall()
 
-                if SQLFamilyID != None:
+                if SQLFamilyID == '':
                     return render_template('addMember.html', Message = "That user is already part of a family")
+                else:
+                    cursor.execute('SELECT UserID FROM User WHERE Email="' + str(email) + '";')
+                    SQLUserID = cursor.fetchone()[0]
+
+                    cursor.execute('INSERT INTO INVITE(FamilyID, InvitedUserID) VALUES("' + str(familyID) + '","' + str(SQLUserID) + '");')
+                    database.commit()
+                    
+                    cursor.execute('SELECT InviteID FROM Invite ORDER BY InviteID DESC LIMIT 1')
+                    InviteID = cursor.fetchone()[0]
+
+                    link = '127.0.0.1:5000/joinfamily/' + str(InviteID)
+
+                    return render_template('addMember.html', InviteLink=link)
         return render_template('addMember.html')
 
 @app.route('/myfamily/<familyID>')
@@ -237,8 +256,37 @@ def adminPannel(familyID):
     else:
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
-        print(f"[E] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
+        print(f"[S] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
+
+@app.route('/joinfamily/<inviteID>')
+@login_required
+def invite(inviteID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id'] 
+
+    cursor.execute('SELECT * FROM Invite WHERE InviteID=' + str(inviteID) + ';')
+    data = cursor.fetchall()
+
+    if len(data) == 0:
+        print(f"[E] Invalid invite code ({inviteID}) was entered")
+        return render_template('joinError.html', Message='That invite code is unknown')
+    else:
+        cursor.execute('SELECT InvitedUserID FROM Invite WHERE InviteID=' + str(inviteID) + ';')
+        invitedUserID = cursor.fetchone()[0]
+
+        if str(invitedUserID) != user_id:
+            print(f"[E] Invite not valid for current user (ID: {user_id})")
+            return render_template('joinError.html', Message='That invite is not meant for you')
+        else:
+            cursor.execute('SELECT FamilyID FROM Invite WHERE InviteID=' + str(inviteID) + ';')
+            FamilyID = cursor.fetchone()[0]
+
+            cursor.execute('UPDATE User SET FamilyID="' + str(FamilyID)  + '" WHERE UserID="' + str(user_id) + '";')
+            database.commit()
+
+            return render_template('joinFamily.html', Message='You are now a member of that family')
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

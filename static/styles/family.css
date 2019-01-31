@@ -26,11 +26,14 @@ li a
     color: #000;
     padding: 8px 16px;
     text-decoration: none;
+    transition: all 0.25s;
 }
 
 li a:hover 
 {
     background-color: #111;
+    color: #f1f1f1;
+    transition: all 0.25s;
 }
 
 .wrapper
@@ -70,6 +73,16 @@ li a:hover
 
 }
 
+table
+{
+    text-align: center;
+}
+
+td
+{
+    padding: 1.5vh;
+}
+
 .first h1
 {
     text-align: center;
@@ -78,4 +91,28 @@ li a:hover
 .second h1
 {
     text-align: center;
+}
+
+::-webkit-scrollbar 
+{
+    width: 15px;
+}
+
+::-webkit-scrollbar-track 
+{
+    background: #f1f1f1; 
+    border-top-right-radius: 1vw;
+    border-bottom-right-radius: 1vw;
+}
+
+::-webkit-scrollbar-thumb 
+{
+    background: #888; 
+    border-top-right-radius: 1vw;
+    border-bottom-right-radius: 1vw;
+}
+
+::-webkit-scrollbar-thumb:hover 
+{
+    background: #555; 
 }

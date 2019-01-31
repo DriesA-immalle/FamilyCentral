@@ -193,9 +193,9 @@ def addMember(familyID):
                 return render_template('addMember.html', Message = "We don't know that email")
             else:
                 cursor.execute('SELECT FamilyID FROM User WHERE Email="' + str(email) + '";')
-                SQLFamilyID = cursor.fetchall()
+                SQLFamilyID = cursor.fetchone()[0]
 
-                if SQLFamilyID == '':
+                if SQLFamilyID != None:
                     return render_template('addMember.html', Message = "That user is already part of a family")
                 else:
                     cursor.execute('SELECT UserID FROM User WHERE Email="' + str(email) + '";')
@@ -281,9 +281,9 @@ def invite(inviteID):
             return render_template('joinError.html', Message='That invite is not meant for you')
         else:
             cursor.execute('SELECT FamilyID FROM Invite WHERE InviteID=' + str(inviteID) + ';')
-            FamilyID = cursor.fetchone()[0]
+            SQLFamilyID = cursor.fetchone()[0]
 
-            cursor.execute('UPDATE User SET FamilyID="' + str(FamilyID)  + '" WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID)  + '" WHERE UserID="' + str(user_id) + '";')
             database.commit()
 
             return render_template('joinFamily.html', Message='You are now a member of that family')

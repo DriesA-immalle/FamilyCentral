@@ -165,8 +165,8 @@ def deleteFamily():
         else:
             print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
             cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
-            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
-            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE FamilyID="' + str(SQLFamilyID) + '";')
+            cursor.execute('UPDATE User SET FamilyID = NULL WHERE FamilyId="' + str(SQLFamilyID) + '";')
             database.commit()
         return redirect(url_for('home'))
 
@@ -207,7 +207,7 @@ def addMember(familyID):
                     cursor.execute('SELECT InviteID FROM Invite ORDER BY InviteID DESC LIMIT 1')
                     InviteID = cursor.fetchone()[0]
 
-                    link = '127.0.0.1:5000/joinfamily/' + str(InviteID)
+                    link = '127.0.0.1:5000/invite/' + str(InviteID)
 
                     return render_template('addMember.html', InviteLink=link)
         return render_template('addMember.html')
@@ -259,7 +259,7 @@ def adminPannel(familyID):
         print(f"[S] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
 
-@app.route('/joinfamily/<inviteID>')
+@app.route('/invite/<inviteID>')
 @login_required
 def invite(inviteID):
     database = connect('FamilyCentral')
@@ -290,4 +290,4 @@ def invite(inviteID):
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'
-    app.run(debug=1)
+    app.run(debug=1, host='0.0.0.0')

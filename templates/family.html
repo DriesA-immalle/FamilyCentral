@@ -22,19 +22,40 @@
             <table style="width:100%">
                 <thead>
                     <h1>Shopping List</h1>
+                    <button style="float:right" onclick="location.href='/myfamily/0/addshoppinglist'" >+</button>
                     <tr>
                         <th>Item</th>
                         <th>Added by</th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    {% for item in shoppinglist %}
+                        <tr>
+                            <td>{{item[0]}}</td>
+                            <td>{{item[1]}}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="second">
-            <table>
-                <tr><h1>Upcomming events</h1></tr>
+            <table style="width:100%">
+                <thead>
+                    <h1>Upcomming Events</h1>
+                    <button style="float:right" onclick="location.href='/myfamily/0/addevent'" >+</button>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in event %}
+                        <tr>
+                            <td>{{item[0]}}</td>
+                            <td>{{item[1]}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>   

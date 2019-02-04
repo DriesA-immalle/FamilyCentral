@@ -57,7 +57,8 @@ li a:hover
     border-radius: 1vw;
     margin-top: 4%;
     border: 2px solid #e1e4e8;
-    overflow-y: scroll
+    overflow-y: scroll;
+    
 
 }
 
@@ -70,7 +71,7 @@ li a:hover
     border-radius: 1vw;
     margin-top: 4%;
     border: 2px solid #e1e4e8;
-
+    overflow-y: scroll;
 }
 
 table

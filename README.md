@@ -78,3 +78,8 @@ Start of a Python Web Application
 
 **4aa7e59**63e64573655237bd03bdcbdaec50fea28
 - Fully working invite system with links
+
+**82c108f**65d3252836dd661f6126900edb8bbbc70
+- V0.0.1-aplha First complete release
+	- Added shoppinglist
+	- Added events

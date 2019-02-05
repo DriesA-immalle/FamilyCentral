@@ -1,11 +1,9 @@
 # FamilyCentral
 Start of a Python Web Application
 ---
-## Entity Relationships in an early build.
-![ER Scheme](https://i.postimg.cc/ZYDwvhX0/ERWebApp.png)
 
-## Update of Entity Relationships
-![ER Scheme](https://i.postimg.cc/XNx8R3kD/Untitled-Diagram.png)
+## V1.0.0-alpha
+![ER Scheme](https://i.postimg.cc/PqFqTHb0/ERWebApp.png)
 
 ## Commit History
 **2987ecb**6f7743bac1d4926b983c819beab1ecf61
@@ -78,3 +76,8 @@ Start of a Python Web Application
 
 **4aa7e59**63e64573655237bd03bdcbdaec50fea28
 - Fully working invite system with links
+
+**82c108f**65d3252836dd661f6126900edb8bbbc70
+- V0.0.1-aplha First complete release
+	- Added shoppinglist
+	- Added events

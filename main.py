@@ -228,6 +228,12 @@ def familyPannel(familyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
         return redirect(url_for('familyPannel', familyID = SQLfamilyID))
     else:
+        cursor.execute('DELETE FROM Event WHERE EventDate < date("now");')
+        database.commit()
+        cursor.execute('SELECT changes()')
+        amount = cursor.fetchone()[0]
+        print(f"[S] Deleted {amount} event(s) that expired")
+
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
 
@@ -343,6 +349,28 @@ def addShoppingList(familyID):
             database.commit()
             return redirect(url_for('familyPannel', familyID = SQLfamilyID))
         return render_template('addShoppingList.html')
+
+@app.route('/myfamily/<familyID>/clearshoppinglist', methods=['GET', 'POST'])
+@login_required
+def clearShoppingList(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('clearShoppingList', familyID = SQLfamilyID))
+    else:
+        if request.method == 'POST':
+            cursor.execute('DELETE FROM ShoppinglistItem WHERE FamilyID="' + str(SQLfamilyID) + '";')
+            database.commit()
+            return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+        return render_template('clearShoppinglist.html')
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

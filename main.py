@@ -165,6 +165,8 @@ def deleteFamily():
         else:
             print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
             cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
+            cursor.execute('DELETE FROM Event WHERE FamilyID=' + str(SQLFamilyID) + ';')
+            cursor.execute('DELETE FROM ShoppingListItem WHERE FamilyID=' + str(SQLFamilyID) + ';')
             cursor.execute('UPDATE User SET IsAdmin = 0 WHERE FamilyID="' + str(SQLFamilyID) + '";')
             cursor.execute('UPDATE User SET FamilyID = NULL WHERE FamilyId="' + str(SQLFamilyID) + '";')
             database.commit()

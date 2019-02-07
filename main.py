@@ -237,10 +237,10 @@ def familyPannel(familyID):
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
 
-        cursor.execute('SELECT ItemName, UserID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT ItemName, UserID, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
         shoppinglistItems = cursor.fetchall()
 
-        cursor.execute('SELECT EventName, EventDate FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT EventName, EventDate, EventID FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
         events = cursor.fetchall()
 
         print(f"[S] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
@@ -371,6 +371,46 @@ def clearShoppingList(familyID):
             database.commit()
             return redirect(url_for('familyPannel', familyID = SQLfamilyID))
         return render_template('clearShoppinglist.html')
+
+@app.route('/myfamily/<familyID>/clearitem/<itemID>')
+@login_required
+def clearItem(familyID, itemID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('clearItem', familyID = SQLfamilyID, itemID = itemID))
+    else:
+        cursor.execute('DELETE FROM ShoppingListItem WHERE ItemID=' + str(itemID) + ';')
+        database.commit()
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+
+@app.route('/myfamily/<familyID>/clearevent/<eventID>')
+@login_required
+def clearEvent(familyID, eventID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('clearEvent', familyID = SQLfamilyID, eventID = eventID))
+    else:
+        cursor.execute('DELETE FROM Event WHERE EventID=' + str(eventID) + ';')
+        database.commit()
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

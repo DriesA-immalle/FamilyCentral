@@ -17,6 +17,7 @@ ul
     height: 100%; 
     position: fixed; 
     overflow: auto; 
+    text-align: center;
     font-family: 'Roboto';
 }
 

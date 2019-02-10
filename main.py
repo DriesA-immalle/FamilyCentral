@@ -25,6 +25,10 @@ def redirectRootToHome():
 def home():
     return render_template('home.html', user = current_user)
 
+##########################
+# START lOGIN AND SIGNUP #
+##########################
+
 @app.route('/login/', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -106,6 +110,14 @@ def signup():
             return(redirect(url_for('login')))
     return render_template('signup.html')
 
+########################
+# END LOGIN AND SIGNUP #
+########################
+
+####################################
+# START CREATE AND DELETE FAMILIES #
+####################################
+
 @app.route('/createfamily/', methods=['GET','POST'])
 @login_required
 def createFamily():
@@ -172,47 +184,13 @@ def deleteFamily():
             database.commit()
         return redirect(url_for('home'))
 
-@app.route('/myfamily/<familyID>/addmember', methods=['GET', 'POST'])
-@login_required
-def addMember(familyID):
-    database = connect('FamilyCentral')
-    cursor = database.cursor()    
-    user_id = session['user_id']
+##################################
+# END CREATE AND DELETE FAMILIES #
+##################################
 
-    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
-    SQLFamilyID = cursor.fetchone()[0]
-
-    if familyID != str(SQLFamilyID):
-        return redirect(url_for('addMember', familyID = SQLFamilyID))
-    else:
-        if request.method == 'POST':
-            email = request.form['email']
-
-            cursor.execute('SELECT * FROM User WHERE Email="' + str(email) + '";')
-            data = cursor.fetchall()
-
-            if len(data) == 0:
-                return render_template('addMember.html', Message = "We don't know that email")
-            else:
-                cursor.execute('SELECT FamilyID FROM User WHERE Email="' + str(email) + '";')
-                SQLFamilyID = cursor.fetchone()[0]
-
-                if SQLFamilyID != None:
-                    return render_template('addMember.html', Message = "That user is already part of a family")
-                else:
-                    cursor.execute('SELECT UserID FROM User WHERE Email="' + str(email) + '";')
-                    SQLUserID = cursor.fetchone()[0]
-
-                    cursor.execute('INSERT INTO INVITE(FamilyID, InvitedUserID) VALUES("' + str(familyID) + '","' + str(SQLUserID) + '");')
-                    database.commit()
-                    
-                    cursor.execute('SELECT InviteID FROM Invite ORDER BY InviteID DESC LIMIT 1')
-                    InviteID = cursor.fetchone()[0]
-
-                    link = '127.0.0.1:5000/invite/' + str(InviteID)
-
-                    return render_template('addMember.html', InviteLink=link)
-        return render_template('addMember.html')
+##################
+# START FAMILIES #
+##################
 
 @app.route('/myfamily/<familyID>')
 @login_required
@@ -274,6 +252,56 @@ def adminPannel(familyID):
         print(f"[S] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
 
+################
+# END FAMILIES #
+################
+
+########################
+# START ADDING MEMBERS #
+########################
+
+@app.route('/myfamily/<familyID>/addmember', methods=['GET', 'POST'])
+@login_required
+def addMember(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLFamilyID = cursor.fetchone()[0]
+
+    if familyID != str(SQLFamilyID):
+        return redirect(url_for('addMember', familyID = SQLFamilyID))
+    else:
+        if request.method == 'POST':
+            email = request.form['email']
+
+            cursor.execute('SELECT * FROM User WHERE Email="' + str(email) + '";')
+            data = cursor.fetchall()
+
+            if len(data) == 0:
+                return render_template('addMember.html', Message = "We don't know that email")
+            else:
+                cursor.execute('SELECT FamilyID FROM User WHERE Email="' + str(email) + '";')
+                SQLFamilyID = cursor.fetchone()[0]
+
+                if SQLFamilyID != None:
+                    return render_template('addMember.html', Message = "That user is already part of a family")
+                else:
+                    cursor.execute('SELECT UserID FROM User WHERE Email="' + str(email) + '";')
+                    SQLUserID = cursor.fetchone()[0]
+
+                    cursor.execute('INSERT INTO INVITE(FamilyID, InvitedUserID) VALUES("' + str(familyID) + '","' + str(SQLUserID) + '");')
+                    database.commit()
+                    
+                    cursor.execute('SELECT InviteID FROM Invite ORDER BY InviteID DESC LIMIT 1')
+                    InviteID = cursor.fetchone()[0]
+
+                    link = '127.0.0.1:5000/invite/' + str(InviteID)
+
+                    return render_template('addMember.html', InviteLink=link)
+        return render_template('addMember.html')
+
 @app.route('/invite/<inviteID>')
 @login_required
 def invite(inviteID):
@@ -303,6 +331,58 @@ def invite(inviteID):
 
             return render_template('joinFamily.html', Message='You are now a member of that family')
 
+######################
+# END ADDING MEMBERS #
+######################
+
+################
+# START EVENTS #
+################
+
+@app.route('/myfamily/<familyID>/events')
+@login_required
+def events(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('events', familyID = SQLfamilyID))
+    else:
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLFamilyName = cursor.fetchone()[0]
+
+        cursor.execute('SELECT EventName, EventDate, EventID FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        events = cursor.fetchall()
+
+        return render_template('events.html', familyName = SQLFamilyName, event = events)
+
+@app.route('/myfamily/<familyID>/events/clearevent/<eventID>')
+@login_required
+def clearEvent(familyID, eventID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('clearEvent', familyID = SQLfamilyID, eventID = eventID))
+    else:
+        cursor.execute('DELETE FROM Event WHERE EventID=' + str(eventID) + ';')
+        database.commit()
+        return redirect(url_for('events', familyID = SQLfamilyID))
+
 @app.route('/myfamily/<familyID>/addevent', methods=['GET', 'POST'])
 @login_required
 def addEvent(familyID):
@@ -325,10 +405,42 @@ def addEvent(familyID):
             
             cursor.execute('INSERT INTO EVENT(EventName, EventDate, FamilyID, UserID) VALUES("' + str(name) + '","' + str(date) + '","' + str(SQLfamilyID) + '","' + str(user_id) + '");') 
             database.commit()
-            return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+            return redirect(url_for('events', familyID = SQLfamilyID))
         return render_template('addEvent.html')
 
-@app.route('/myfamily/<familyID>/addshoppinglist', methods=['GET', 'POST'])
+##############
+# END EVENTS #
+##############
+
+######################
+# START SHOPPINGLIST #
+######################
+
+@app.route('/myfamily/<familyID>/shoppinglist')
+@login_required
+def shoppinglist(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('shoppinglist', familyID = SQLfamilyID))
+    else:
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLFamilyName = cursor.fetchone()[0]
+
+        cursor.execute('SELECT ItemName, UserID, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        shoppinglistItems = cursor.fetchall()
+
+        return render_template('shoppinglist.html', familyName = SQLFamilyName, shoppinglist = shoppinglistItems)
+
+@app.route('/myfamily/<familyID>/shoppinglist/addshoppinglist', methods=['GET', 'POST'])
 @login_required
 def addShoppingList(familyID):
     database = connect('FamilyCentral')
@@ -349,10 +461,10 @@ def addShoppingList(familyID):
             
             cursor.execute('INSERT INTO ShoppinglistItem(ItemName, UserID, FamilyID) VALUES("' + str(item) + '","' + str(user_id) + '","' + str(SQLfamilyID) + '");') 
             database.commit()
-            return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+            return redirect(url_for('shoppinglist', familyID = SQLfamilyID))
         return render_template('addShoppingList.html')
 
-@app.route('/myfamily/<familyID>/clearshoppinglist', methods=['GET', 'POST'])
+@app.route('/myfamily/<familyID>/shoppinglist/clearshoppinglist', methods=['GET', 'POST'])
 @login_required
 def clearShoppingList(familyID):
     database = connect('FamilyCentral')
@@ -371,10 +483,10 @@ def clearShoppingList(familyID):
         if request.method == 'POST':
             cursor.execute('DELETE FROM ShoppinglistItem WHERE FamilyID="' + str(SQLfamilyID) + '";')
             database.commit()
-            return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+            return redirect(url_for('shoppinglist', familyID = SQLfamilyID))
         return render_template('clearShoppinglist.html')
 
-@app.route('/myfamily/<familyID>/clearitem/<itemID>')
+@app.route('/myfamily/<familyID>/shoppinglist/clearitem/<itemID>')
 @login_required
 def clearItem(familyID, itemID):
     database = connect('FamilyCentral')
@@ -392,27 +504,23 @@ def clearItem(familyID, itemID):
     else:
         cursor.execute('DELETE FROM ShoppingListItem WHERE ItemID=' + str(itemID) + ';')
         database.commit()
-        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+        return redirect(url_for('shoppinglist', familyID = SQLfamilyID))
 
-@app.route('/myfamily/<familyID>/clearevent/<eventID>')
-@login_required
-def clearEvent(familyID, eventID):
-    database = connect('FamilyCentral')
-    cursor = database.cursor()    
-    user_id = session['user_id']
+####################
+# END SHOPPINGLIST #
+####################
 
-    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
-    SQLfamilyID = cursor.fetchone()[0]
-    if SQLfamilyID == None:
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
-        return redirect(url_for('createFamily'))
-    elif familyID != str(SQLfamilyID):
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
-        return redirect(url_for('clearEvent', familyID = SQLfamilyID, eventID = eventID))
-    else:
-        cursor.execute('DELETE FROM Event WHERE EventID=' + str(eventID) + ';')
-        database.commit()
-        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+###############
+# START ERROR #
+###############
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+#############
+# END ERROR #
+#############
 
 if __name__ == "__main__":
     app.secret_key = 'TheSecretKey'

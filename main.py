@@ -217,7 +217,7 @@ def familyPannel(familyID):
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
 
-        cursor.execute('SELECT ItemName, UserID, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
         shoppinglistItems = cursor.fetchall()
 
         cursor.execute('SELECT EventName, EventDate, EventID FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
@@ -238,7 +238,7 @@ def adminPannel(familyID):
 
     cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
     SQLIsAdmin = cursor.fetchone()[0]
-    if familyID != None:
+    if familyID == None:
         return redirect(url_for('createFamily'))
     elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
@@ -435,7 +435,7 @@ def shoppinglist(familyID):
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
 
-        cursor.execute('SELECT ItemName, UserID, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
         shoppinglistItems = cursor.fetchall()
 
         return render_template('shoppinglist.html', familyName = SQLFamilyName, shoppinglist = shoppinglistItems)
@@ -459,7 +459,10 @@ def addShoppingList(familyID):
         if request.method == 'POST':
             item = request.form['item']
             
-            cursor.execute('INSERT INTO ShoppinglistItem(ItemName, UserID, FamilyID) VALUES("' + str(item) + '","' + str(user_id) + '","' + str(SQLfamilyID) + '");') 
+            cursor.execute('SELECT Username FROM USER WHERE UserID=' + str(user_id) + ';')
+            username = cursor.fetchone()[0]
+
+            cursor.execute('INSERT INTO ShoppinglistItem(ItemName, Username, FamilyID) VALUES("' + str(item) + '","' + str(username) + '","' + str(SQLfamilyID) + '");') 
             database.commit()
             return redirect(url_for('shoppinglist', familyID = SQLfamilyID))
         return render_template('addShoppingList.html')

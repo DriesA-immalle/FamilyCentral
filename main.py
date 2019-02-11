@@ -223,8 +223,16 @@ def familyPannel(familyID):
         cursor.execute('SELECT EventName, EventDate, EventID FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
         events = cursor.fetchall()
 
+        cursor.execute('SELECT * FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        events = cursor.fetchall()
+        amountevents = len(events)
+
+        cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        shoppinglistItems = cursor.fetchall()
+        amountOfItems = len(shoppinglistItems)
+
         print(f"[S] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
-        return render_template('family.html', familyName = SQLFamilyName, event = events, shoppinglist = shoppinglistItems)
+        return render_template('family.html', familyName = SQLFamilyName, amountOfEvents = amountevents, amountOfItems = amountOfItems)
 
 @app.route('/myfamily/<familyID>/admin')
 @login_required

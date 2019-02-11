@@ -5,14 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>New event</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/addEvent.css') }}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
 </head>
 <body>
-    <form name="addEvent" method="POST" autocomplete="off">
-        <input type="text" name="name" placeholder="Name for event" required><br>
-        <input type="date" name="date" placeholder="Date" required><br>
-        <input type="submit">
-    </form>
-    <h1>{{Message}}</h1>
+    <div class="navbar">
+            <nav class="nav__mobile"></nav>
+            <div class="container">
+                <div class="navbar__inner">
+                    <a href="/" class="navbar__logo">InHouse<sup>Studios</sup></a>
+                    <nav class="navbar__menu">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/myfamily/0">Dashboard</a></li>
+                        </ul>
+                    </nav>
+                    <div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+                </div>
+            </div>
+        </div>
+    <div class="auth">
+        <div class="container">
+            <div class="auth__inner">
+                <div class="auth__media">
+                    <img src="/static/event.svg">
+                </div>
+                <div class="auth__auth">
+                    <h1 class="auth__title">Add an event</h1>
+                    <form name="addEvent" method="POST" autocomplete="off">
+                        <input type="text" name="name" placeholder="Name for event" required><br>
+                        <input type="date" name="date" required><br>
+                        <input type="submit" class="button button__primary">
+                    </form>
+                    <h1>{{Message}}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

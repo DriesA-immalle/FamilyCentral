@@ -5,9 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>404 Not Found</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/404.css') }}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
 </head>
 <body>
-
+    <div class="auth">
+        <div class="container">
+            <div class="auth__inner">
+                <div class="auth__media">
+                    <img src="/static/404.svg">
+                </div>
+                <div class="auth__auth">
+                    <h1 class="auth__title">Well this is awkward</h1>
+                    <p>How did you end up here?</p>
+                    <button onclick="location.href='/'" class="button button__primary">TAKE ME BACK!</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -334,10 +334,16 @@ def invite(inviteID):
             cursor.execute('SELECT FamilyID FROM Invite WHERE InviteID=' + str(inviteID) + ';')
             SQLFamilyID = cursor.fetchone()[0]
 
+            cursor.execute('SELECT Familyname FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
+            SQLFamilyName = cursor.fetchone()[0]
+
             cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID)  + '" WHERE UserID="' + str(user_id) + '";')
             database.commit()
 
-            return render_template('joinFamily.html', Message='You are now a member of that family')
+            cursor.execute('DELETE FROM Invite WHERE InviteID=' + str(inviteID) + ';')
+            database.commit()
+
+            return render_template('joinFamily.html', familyname = SQLFamilyName)
 
 ######################
 # END ADDING MEMBERS #

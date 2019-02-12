@@ -35,8 +35,10 @@
                             <li><a href="/myfamily/0" class="vMenu--active">Overview</a></li>
                             <li><a href="/myfamily/0/shoppinglist">Shopping list</a></li>
                             <li><a href="/myfamily/0/events">Events</a></li>
-                            <li><a href="#">Fourth page</a></li>
-                            <li><a href="#">Fifth page</a></li>
+                            {% if isAdmin %}
+                            <li><a href="#">&nbsp</a></li>
+                            <li><a href="/myfamily/0/admin">Admin Dashboard</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                     <div class="app__main">

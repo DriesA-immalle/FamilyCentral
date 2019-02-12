@@ -227,12 +227,15 @@ def familyPannel(familyID):
         events = cursor.fetchall()
         amountevents = len(events)
 
+        cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
+        isAdmin = cursor.fetchone()[0]
+
         cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
         shoppinglistItems = cursor.fetchall()
         amountOfItems = len(shoppinglistItems)
 
         print(f"[S] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
-        return render_template('family.html', familyName = SQLFamilyName, amountOfEvents = amountevents, amountOfItems = amountOfItems)
+        return render_template('family.html', familyName = SQLFamilyName, amountOfEvents = amountevents, amountOfItems = amountOfItems, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/admin')
 @login_required
@@ -259,6 +262,65 @@ def adminPannel(familyID):
         SQLFamilyName = cursor.fetchone()[0]
         print(f"[S] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
         return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
+
+@app.route('/myfamily/<familyID>/admin/members')
+@login_required
+def adminMembers(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']   
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+
+    cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
+    SQLIsAdmin = cursor.fetchone()[0]
+    if familyID == None:
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
+        return redirect(url_for('adminMembers', familyID = SQLfamilyID))
+    elif SQLIsAdmin == 0:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+    else:
+        cursor.execute('SELECT userID, username FROM User WHERE FamilyID=' + str(SQLfamilyID) + ' AND UserID!=' + str(user_id) +  ';')
+        users = cursor.fetchall()
+
+        return render_template('adminMembers.html', users = users)
+
+@app.route('/myfamily/<familyID>/admin/kickmember/<memberID>')
+@login_required
+def kickMember(familyID, memberID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']   
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+
+    cursor.execute('SELECT IsAdmin FROM User WHERE UserID=' + str(user_id) + ';')
+    SQLIsAdmin = cursor.fetchone()[0]
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + str(memberID) + ';')
+    SQLMemberFamilyID = cursor.fetchone()[0]
+
+    if familyID == None:
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong adminpannel")
+        return redirect(url_for('kickMember', familyID = SQLfamilyID, memberID = memberID))
+    elif SQLIsAdmin == 0:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the adminpannel without permission")
+        return redirect(url_for('familyPannel', familyID = SQLfamilyID))
+    elif SQLMemberFamilyID != SQLfamilyID:
+        return redirect(url_for('adminMembers', familyID = SQLfamilyID))
+    else:
+        cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(memberID) + '";')
+        cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserId="' + str(memberID) + '";')
+        database.commit()
+        return redirect(url_for('adminMembers', familyID = SQLfamilyID))
+
 
 ################
 # END FAMILIES #

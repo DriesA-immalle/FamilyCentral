@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ familyName }} Admin Panel</title>
+    <title>{{ familyName }} Members</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
 </head>
@@ -30,14 +30,31 @@
 			<div class="app__inner">
 				<div class="app__menu">
 					<ul class="vMenu">
-                        <li><a class="vMenu--active">Overview</a></li>
-                        <li><a href="/myfamily/0/admin/members">Members</a></li>
+                        <li><a href="/myfamily/0/admin">Overview</a></li>
+                        <li><a class="vMenu--active">Members</a></li>
 					</ul>
 				</div>
 				<div class="app__main">
 					<div class="text-container">
 						<h3 class="app__main__title">{{familyName}}</h3>
 						<p>Admin Dashboard</p>
+						<table style="width:100%">
+							<thead>
+								<h1 style="float:left">Members</h1>
+								<button style="float:right" class="button__accent" onclick="location.href='/myfamily/0/addmember'" >+</button>
+								<tr>
+									<th>Username</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for user in users %}
+								<tr style="text-align:center">
+									<td>{{user[1]}}</td>
+									<td><button class="button button__delete" onclick="location.href='/myfamily/0/admin/kickmember/{{user[0]}}'" >Kick member</button></td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

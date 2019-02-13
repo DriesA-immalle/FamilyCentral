@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#6C63FF">
     <title>{{familyName}}</title>
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
@@ -36,7 +37,7 @@
                             <li><a href="/myfamily/0/shoppinglist">Shopping list</a></li>
                             <li><a href="/myfamily/0/events">Events</a></li>
                             {% if isAdmin %}
-                            <li><a href="#">&nbsp</a></li>
+                            <li><a>&nbsp</a></li>
                             <li><a href="/myfamily/0/admin">Admin Dashboard</a></li>
                             {% endif %}
                         </ul>

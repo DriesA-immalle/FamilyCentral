@@ -18,6 +18,7 @@ html {
  * Remove the margin in all browsers.
  */
 body {
+  -webkit-font-smoothing: antialiased;
   margin: 0; }
 
 /**

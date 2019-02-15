@@ -145,8 +145,8 @@ def createFamily():
                 print(f"[E] Duplicate data (name: {FamilyName}) was not inserted")
             else: 
                 print(f"[S] New family (name: {FamilyName}) was inserted")
-                
-                cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + FamilyName + '";')
+
+                cursor.execute('SELECT FamilyID FROM Family ORDER BY FamilyID DESC LIMIT 1;')
                 SQLFamilyID = cursor.fetchone()[0]
 
                 cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')

@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ familyName }} Members</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#6C63FF">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
 </head>
 <body>
@@ -30,6 +31,8 @@
 			<div class="app__inner">
 				<div class="app__menu">
 					<ul class="vMenu">
+						<li><a href="/myfamily/0">Dashboard</a></li>
+						<li><a>&nbsp</a></li>
                         <li><a href="/myfamily/0/admin">Overview</a></li>
                         <li><a class="vMenu--active">Members</a></li>
 					</ul>
@@ -38,6 +41,12 @@
 					<div class="text-container">
 						<h3 class="app__main__title">{{familyName}}</h3>
 						<p>Admin Dashboard</p>
+						{% if users|length == 0 %}
+						<table>
+							<td><p>You are the only member in this family</p></td>
+							<td><button class="button__accent" onclick="location.href='/myfamily/0/addmember'" >+</button></td>
+						</table>
+						{% else %}
 						<table style="width:100%">
 							<thead>
 								<h1 style="float:left">Members</h1>
@@ -47,19 +56,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for user in users %}
-								<tr style="text-align:center">
-									<td>{{user[1]}}</td>
-									<td><button class="button button__delete" onclick="location.href='/myfamily/0/admin/kickmember/{{user[0]}}'" >Kick member</button></td>
-								</tr>
-								{% endfor %}
+									{% for user in users %}
+									<tr style="text-align:center">
+										<td>{{user[1]}}</td>
+										<td><button class="button button__delete" onclick="location.href='/myfamily/0/admin/kickmember/{{user[0]}}'" >Kick member</button></td>
+									</tr>
+									{% endfor %}
 							</tbody>
 						</table>
+						{% endif %}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-<script src='js/app.min.js'></script>
+    <script src='/static/app.js'></script>
 </body>
 </html>

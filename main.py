@@ -424,6 +424,10 @@ def events(familyID):
 
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
+
+    cursor.execute('SELECT isAdmin FROM User Where UserID=' + user_id + ';')
+    isAdmin = cursor.fetchone()[0]
+
     if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
         return redirect(url_for('createFamily'))
@@ -437,7 +441,7 @@ def events(familyID):
         cursor.execute('SELECT EventName, EventDate, EventID FROM Event WHERE FamilyID=' + str(SQLfamilyID) + ';')
         events = cursor.fetchall()
 
-        return render_template('events.html', familyName = SQLFamilyName, event = events)
+        return render_template('events.html', familyName = SQLFamilyName, event = events, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/events/clearevent/<eventID>')
 @login_required
@@ -501,6 +505,10 @@ def shoppinglist(familyID):
 
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
+
+    cursor.execute('SELECT isAdmin FROM User Where UserID=' + user_id + ';')
+    isAdmin = cursor.fetchone()[0]
+
     if SQLfamilyID == None:
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
         return redirect(url_for('createFamily'))
@@ -514,7 +522,7 @@ def shoppinglist(familyID):
         cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
         shoppinglistItems = cursor.fetchall()
 
-        return render_template('shoppinglist.html', familyName = SQLFamilyName, shoppinglist = shoppinglistItems)
+        return render_template('shoppinglist.html', familyName = SQLFamilyName, shoppinglist = shoppinglistItems, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/shoppinglist/addshoppinglist', methods=['GET', 'POST'])
 @login_required

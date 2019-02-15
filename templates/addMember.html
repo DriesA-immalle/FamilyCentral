@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#6C63FF">
     <title>Add member</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
@@ -34,7 +35,7 @@
                     <p>Type in the email address of the user you want to invite</p>
                     <form name="addMember" method="POST" autocomplete="off">
                         <input type="email" name="email" placeholder="you@example.com" required><br>
-                        <input type="submit" class="button button__primary">
+                        <input type="submit" value="Generate link" class="button button__primary">
                     </form>
                     <h3 class="app__header__title">{{Message}}</h3>
                     <input type="text" placeholder="Invite link will appear here" readonly value="{{InviteLink}}">

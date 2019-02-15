@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#6C63FF">
     <title>{{familyName}}' Shoppinglist</title>
 
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
@@ -35,8 +36,10 @@
                                 <li><a href="/myfamily/0" >Overview</a></li>
                                 <li><a href="/myfamily/0/shoppinglist" class="vMenu--active">Shopping list</a></li>
                                 <li><a href="/myfamily/0/events">Events</a></li>
-                                <li><a href="#">Fourth page</a></li>
-                                <li><a href="#">Fifth page</a></li>
+                                {% if isAdmin %}
+                                <li><a>&nbsp</a></li>
+                                <li><a href="/myfamily/0/admin">Admin Dashboard</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                         <div class="app__main">

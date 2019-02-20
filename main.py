@@ -349,6 +349,10 @@ def addMember(familyID):
         if request.method == 'POST':
             email = request.form['email']
 
+            if ' ' in email or ';' in email:
+                print(f"[E] Possible attempt to SQL INJECTION")
+                return render_template('addMember.html', Message='That user does not exist')
+
             cursor.execute('SELECT * FROM User WHERE Email="' + str(email) + '";')
             data = cursor.fetchall()
 
@@ -599,6 +603,28 @@ def clearItem(familyID, itemID):
 ####################
 # END SHOPPINGLIST #
 ####################
+
+#################
+# START ACCOUNT #
+#################
+
+@app.route('/myaccount/<userID>')
+@login_required
+def myAccount(userID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    if userID != user_id:
+        return redirect(url_for('myAccount', userID = user_id))
+    else:
+        cursor.execute('SELECT * FROM User WHERE UserID=' + user_id + ';')
+        user = cursor.fetchone()
+        return render_template('myAccount.html', user = user)
+
+###############
+# END ACCOUNT #
+###############
 
 ###############
 # START ERROR #

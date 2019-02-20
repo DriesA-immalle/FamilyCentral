@@ -3,8 +3,10 @@
 import hashlib
 
 hash = hashlib.sha256()
-clearInput = input('> ')
+clearInput = input('>>> ')
 hash.update(clearInput.encode('utf-8'))
 hashed = hash.hexdigest()
 
+print('-'*len(hashed))
 print(hashed)
+print('-'*len(hashed))

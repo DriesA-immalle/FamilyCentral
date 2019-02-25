@@ -590,7 +590,7 @@ def clearItem(familyID, itemID):
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
     if SQLfamilyID == None:
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried deleting an item but is not in a family")
         return redirect(url_for('createFamily'))
     elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
@@ -615,13 +615,42 @@ def myAccount(userID):
     cursor = database.cursor()    
     user_id = session['user_id']
 
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        inFamily = False
+    else:
+        inFamily = True
+
     if userID != user_id:
         return redirect(url_for('myAccount', userID = user_id))
     else:
         cursor.execute('SELECT * FROM User WHERE UserID=' + user_id + ';')
         user = cursor.fetchone()
-        return render_template('myAccount.html', user = user)
+        return render_template('myAccount.html', user = user, inFamily = inFamily)
+        
+@app.route('/leavefamily/<familyID>', methods=['GET', 'POST'])
+@login_required
+def leaveFamily(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
 
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving a family but is not a member")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving another family")
+        return redirect(url_for('leaveFamily', familyID = SQLfamilyID))
+    else:
+        if request.method == 'POST':
+            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+            database.commit()
+            return redirect(url_for('home', userID = user_id))
+        return render_template('leaveFamily.html')
 ###############
 # END ACCOUNT #
 ###############

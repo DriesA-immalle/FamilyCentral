@@ -21,7 +21,8 @@
 				<nav class="navbar__menu">
 					<ul>
                         {% if current_user.is_authenticated %}
-                        <li><a href="/myfamily/0">Dashboard</a></li>
+						<li><a href="/myfamily/0">Dashboard</a></li>
+						<li><a href="/myaccount/0">My account</a></li>
                         <li><a href="/logout">Log out</a></li>
                         {% else %}
 						<li><a href="/login">Log in</a></li>
@@ -44,7 +45,8 @@
 						<h1 class="hero__title">The online bulletin board</h1>
 						<p class="hero__text">InHouse is an easy way to streamline your daily life as a family. Serving as your planner, shopping list and much more!</p>
 						{% if current_user.is_authenticated %}
-						<a href="#who" class="button button__accent">Learn more</a>
+						<a href="/myfamily/0" class="button button__accent">Dashboard</a>
+						<a href="#who" class="button hero__button">Learn more</a>
 						{% else %}
 						<a href="/signup" class="button button__accent">Create an account</a>
 						<a href="#who" class="button hero__button">Learn more</a>
@@ -109,7 +111,7 @@
 	<div class="footer footer--dark">
 		<div class="container">
 			<div class="footer__inner">
-				<a href="index.html" class="footer__textLogo">InHouse<sup>Studios</sup></a>
+				<a href="/" class="footer__textLogo">InHouse<sup>Studios</sup></a>
 				<div class="footer__data">
 				</div>
 			</div>

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="theme-color" content="#6C63FF">
-    <title>{{ familyName }} Admin Panel</title>
+    <title>My Account</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
 </head>
@@ -17,7 +17,7 @@
 				<a href="/" class="navbar__logo">InHouse<sup>Studios</sup></a>
 				<nav class="navbar__menu">
 					<ul>
-						<li><a href="/myfamily/0">Dashboard</a></li>
+						<li><a href="/">Home</a></li>
 						<li><a href="/logout">Log out</a></li>
 					</ul>
 				</nav>
@@ -31,17 +31,18 @@
 			<div class="app__inner">
 				<div class="app__menu">
 					<ul class="vMenu">
-						<li><a href="/myfamily/0">Dashboard</a></li>
-						<li><a>&nbsp</a></li>
-                        <li><a class="vMenu--active">Overview</a></li>
-						<li><a href="/myfamily/0/admin/members">Members</a></li>
-						<li><a href="/deletefamily">Delete family</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a class="vMenu--active">My Account</a></li>
+						<li><a>Nothing</a></li>
 					</ul>
 				</div>
 				<div class="app__main">
 					<div class="text-container">
-						<h3 class="app__main__title">{{familyName}}</h3>
-						<p>Admin Dashboard</p>
+                        <h3 class="app__main__title">My Account</h3>
+                        <h4>Your username</h4>
+                        <p>{{ user[1] }}</p>
+                        <h4>Your email address</h4>
+                        <p>{{ user[2] }}</p>
 					</div>
 				</div>
 			</div>

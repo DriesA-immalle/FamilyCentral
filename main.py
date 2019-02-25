@@ -145,8 +145,8 @@ def createFamily():
                 print(f"[E] Duplicate data (name: {FamilyName}) was not inserted")
             else: 
                 print(f"[S] New family (name: {FamilyName}) was inserted")
-                
-                cursor.execute('SELECT FamilyID FROM Family WHERE FamilyName="' + FamilyName + '";')
+
+                cursor.execute('SELECT FamilyID FROM Family ORDER BY FamilyID DESC LIMIT 1;')
                 SQLFamilyID = cursor.fetchone()[0]
 
                 cursor.execute('UPDATE User SET FamilyID="' + str(SQLFamilyID) + '" WHERE UserID="' + str(user_id) + '";')
@@ -155,7 +155,7 @@ def createFamily():
                 return redirect(url_for('familyPannel', familyID = SQLFamilyID))
     return render_template('createfamily.html')
 
-@app.route('/deletefamily/')
+@app.route('/deletefamily/', methods=['GET','POST'])
 @login_required
 def deleteFamily():
     database = connect('FamilyCentral')
@@ -175,14 +175,17 @@ def deleteFamily():
         if SQLIsAdmin == 0:
             return redirect(url_for('familyPannel', familyID = SQLFamilyID))
         else:
-            print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
-            cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
-            cursor.execute('DELETE FROM Event WHERE FamilyID=' + str(SQLFamilyID) + ';')
-            cursor.execute('DELETE FROM ShoppingListItem WHERE FamilyID=' + str(SQLFamilyID) + ';')
-            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE FamilyID="' + str(SQLFamilyID) + '";')
-            cursor.execute('UPDATE User SET FamilyID = NULL WHERE FamilyId="' + str(SQLFamilyID) + '";')
-            database.commit()
-        return redirect(url_for('home'))
+            if request.method == 'POST':
+                print(f"[S] Family (ID: {SQLFamilyID}) was deleted")
+                cursor.execute('DELETE FROM Family WHERE FamilyID=' + str(SQLFamilyID) + ';')
+                cursor.execute('DELETE FROM Event WHERE FamilyID=' + str(SQLFamilyID) + ';')
+                cursor.execute('DELETE FROM Invite WHERE FamilyID=' + str(SQLFamilyID) + ';')
+                cursor.execute('DELETE FROM ShoppingListItem WHERE FamilyID=' + str(SQLFamilyID) + ';')
+                cursor.execute('UPDATE User SET IsAdmin = 0 WHERE FamilyID="' + str(SQLFamilyID) + '";')
+                cursor.execute('UPDATE User SET FamilyID = NULL WHERE FamilyId="' + str(SQLFamilyID) + '";')
+                database.commit()
+                return redirect(url_for('home'))    
+            return render_template('deleteFamily.html')
 
 ##################################
 # END CREATE AND DELETE FAMILIES #
@@ -345,6 +348,10 @@ def addMember(familyID):
     else:
         if request.method == 'POST':
             email = request.form['email']
+
+            if ' ' in email or ';' in email:
+                print(f"[E] Possible attempt to SQL INJECTION")
+                return render_template('addMember.html', Message='That user does not exist')
 
             cursor.execute('SELECT * FROM User WHERE Email="' + str(email) + '";')
             data = cursor.fetchall()
@@ -583,7 +590,7 @@ def clearItem(familyID, itemID):
     cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
     SQLfamilyID = cursor.fetchone()[0]
     if SQLfamilyID == None:
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried deleting an item but is not in a family")
         return redirect(url_for('createFamily'))
     elif familyID != str(SQLfamilyID):
         print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
@@ -596,6 +603,57 @@ def clearItem(familyID, itemID):
 ####################
 # END SHOPPINGLIST #
 ####################
+
+#################
+# START ACCOUNT #
+#################
+
+@app.route('/myaccount/<userID>')
+@login_required
+def myAccount(userID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        inFamily = False
+    else:
+        inFamily = True
+
+    if userID != user_id:
+        return redirect(url_for('myAccount', userID = user_id))
+    else:
+        cursor.execute('SELECT * FROM User WHERE UserID=' + user_id + ';')
+        user = cursor.fetchone()
+        return render_template('myAccount.html', user = user, inFamily = inFamily)
+        
+@app.route('/leavefamily/<familyID>', methods=['GET', 'POST'])
+@login_required
+def leaveFamily(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving a family but is not a member")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving another family")
+        return redirect(url_for('leaveFamily', familyID = SQLfamilyID))
+    else:
+        if request.method == 'POST':
+            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+            database.commit()
+            return redirect(url_for('home', userID = user_id))
+        return render_template('leaveFamily.html')
+###############
+# END ACCOUNT #
+###############
 
 ###############
 # START ERROR #

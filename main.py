@@ -324,7 +324,28 @@ def kickMember(familyID, memberID):
         database.commit()
         return redirect(url_for('adminMembers', familyID = SQLfamilyID))
 
+@app.route('/leavefamily/<familyID>', methods=['GET', 'POST'])
+@login_required
+def leaveFamily(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
 
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving a family but is not a member")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving another family")
+        return redirect(url_for('leaveFamily', familyID = SQLfamilyID))
+    else:
+        if request.method == 'POST':
+            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+            database.commit()
+            return redirect(url_for('home', userID = user_id))
+        return render_template('leaveFamily.html')
 ################
 # END FAMILIES #
 ################
@@ -629,28 +650,23 @@ def myAccount(userID):
         user = cursor.fetchone()
         return render_template('myAccount.html', user = user, inFamily = inFamily)
         
-@app.route('/leavefamily/<familyID>', methods=['GET', 'POST'])
+@app.route('/deleteaccount/<userID>', methods=['GET', 'POST'])
 @login_required
-def leaveFamily(familyID):
+def deleteAccount(userID):
     database = connect('FamilyCentral')
     cursor = database.cursor()    
     user_id = session['user_id']
 
-    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
-    SQLfamilyID = cursor.fetchone()[0]
-    if SQLfamilyID == None:
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving a family but is not a member")
-        return redirect(url_for('createFamily'))
-    elif familyID != str(SQLfamilyID):
-        print(f"[E] {session['username']} (with ID {session['user_id']}) tried leaving another family")
-        return redirect(url_for('leaveFamily', familyID = SQLfamilyID))
+    if userID != user_id:
+        return redirect(url_for('deleteAccount', userID = user_id))
     else:
         if request.method == 'POST':
-            cursor.execute('UPDATE User SET IsAdmin = 0 WHERE UserID="' + str(user_id) + '";')
-            cursor.execute('UPDATE User SET FamilyID = NULL WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('DELETE FROM User WHERE UserID="' + str(user_id) + '";')
+            cursor.execute('DELETE FROM Invite WHERE InvitedUserID="' + str(user_id) + '";')
             database.commit()
+            logout_user()
             return redirect(url_for('home', userID = user_id))
-        return render_template('leaveFamily.html')
+        return render_template('deleteAccount.html')
 ###############
 # END ACCOUNT #
 ###############

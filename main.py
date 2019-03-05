@@ -267,8 +267,13 @@ def adminPannel(familyID):
     else:
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
+
+        cursor.execute('SELECT Username FROM User WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        members = cursor.fetchall()
+        amountOfMembers = len(members)
+
         print(f"[S] {session['username']} (with ID {session['user_id']}) connected to the adminpannel")
-        return render_template('familyAdminpannel.html', familyName = SQLFamilyName)
+        return render_template('familyAdminpannel.html', familyName = SQLFamilyName, amountOfMembers = amountOfMembers)
 
 @app.route('/myfamily/<familyID>/admin/members')
 @login_required
@@ -652,10 +657,13 @@ def notes(familyID):
         cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
         SQLFamilyName = cursor.fetchone()[0]
 
+        cursor.execute('SELECT isAdmin FROM User Where UserID=' + user_id + ';')
+        isAdmin = cursor.fetchone()[0]
+
         cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ';')
         notes = cursor.fetchall()
 
-        return render_template('notes.html', notes = notes, familyName = SQLFamilyName)
+        return render_template('notes.html', notes = notes, familyName = SQLFamilyName, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/notes/addnote', methods=['GET', 'POST'])
 @login_required

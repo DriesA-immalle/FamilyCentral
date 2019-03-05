@@ -19,6 +19,7 @@
                         <a href="/" class="navbar__logo">InHouse <sup>Studios</sup></a>
                         <nav class="navbar__menu">
                             <ul>
+                                <li><a href="/myaccount/0">My account</a></li>
                                 <li><a href="/myfamily/0/addmember">Add member</a></li>
                                 <li><a href="/logout">Log out</a></li>
                             </ul>
@@ -33,12 +34,17 @@
                     <div class="app__inner">
                         <div class="app__menu">
                             <ul class="vMenu">
-                                <li><a href="/myfamily/0" >Overview</a></li>
+                                <li><b>My Family</b></li>
+                                <li><a href="/myfamily/0">Overview</a></li>
                                 <li><a href="/myfamily/0/shoppinglist" class="vMenu--active">Shopping list</a></li>
                                 <li><a href="/myfamily/0/events">Events</a></li>
+                                <li><a href="/myfamily/0/notes">Notes</a></li>
                                 {% if isAdmin %}
                                 <li><a>&nbsp</a></li>
-                                <li><a href="/myfamily/0/admin">Admin Dashboard</a></li>
+                                <li><b>Admin settings</b></li>
+                                <li><a href="/myfamily/0/admin">Overview</a></li>
+                                <li><a href="/myfamily/0/admin/members">Members</a></li>
+                                <li><a href="/deletefamily">Delete family</a></li>
                                 {% endif %}
                             </ul>
                         </div>

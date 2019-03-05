@@ -17,7 +17,8 @@
 				<a href="/" class="navbar__logo">InHouse<sup>Studios</sup></a>
 				<nav class="navbar__menu">
 					<ul>
-						<li><a href="/myfamily/0">Dashboard</a></li>
+						<li><a href="/myaccount/0">My account</a></li>
+						<li><a href="/myfamily/0/addmember">Add member</a></li>
 						<li><a href="/logout">Log out</a></li>
 					</ul>
 				</nav>
@@ -31,8 +32,13 @@
 			<div class="app__inner">
 				<div class="app__menu">
 					<ul class="vMenu">
-						<li><a href="/myfamily/0">Dashboard</a></li>
+						<li><b>My Family</b></li>
+						<li><a href="/myfamily/0">Overview</a></li>
+						<li><a href="/myfamily/0/shoppinglist">Shopping list</a></li>
+						<li><a href="/myfamily/0/events">Events</a></li>
+						<li><a href="/myfamily/0/notes">Notes</a></li>
 						<li><a>&nbsp</a></li>
+						<li><b>Admin settings</b></li>
                         <li><a class="vMenu--active">Overview</a></li>
 						<li><a href="/myfamily/0/admin/members">Members</a></li>
 						<li><a href="/deletefamily">Delete family</a></li>
@@ -40,8 +46,11 @@
 				</div>
 				<div class="app__main">
 					<div class="text-container">
-						<h3 class="app__main__title">{{familyName}}</h3>
-						<p>Admin Dashboard</p>
+						<h2 class="app__main__title">{{familyName}}' Adminpannel</h2>
+						<a href="/myfamily/0/admin/members">
+							<h3>Members in this family</h3>
+							<p>{{amountOfMembers}}</p>
+						</a>
 					</div>
 				</div>
 			</div>

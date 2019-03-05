@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#6C63FF">
+    <title>{{familyName}}' Notes</title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+        <!-- navbar -->
+        <div class="navbar">
+                <nav class="nav__mobile"></nav>
+                <div class="container">
+                    <div class="navbar__inner">
+                        <a href="/" class="navbar__logo">InHouse <sup>Studios</sup></a>
+                        <nav class="navbar__menu">
+                            <ul>
+                                <li><a href="/myfamily/0/addmember">Add member</a></li>
+                                <li><a href="/logout">Log out</a></li>
+                            </ul>
+                        </nav>
+                        <div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Page content -->
+            <div class="app">
+                <div class="container">
+                    <div class="app__inner">
+                        <div class="app__menu">
+                            <ul class="vMenu">
+                                <li><a href="/myfamily/0" >Overview</a></li>
+                                <li><a href="/myfamily/0/shoppinglist">Shopping list</a></li>
+                                <li><a href="/myfamily/0/shoppinglist" class="vMenu--active">Notes</a></li>
+                                <li><a href="/myfamily/0/events">Events</a></li>
+                                {% if isAdmin %}
+                                <li><a>&nbsp</a></li>
+                                <li><a href="/myfamily/0/admin">Admin Dashboard</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="app__main">
+                            <div class="text-container">
+                                {% if not notes %}
+                                <h1 style="float:left">Oops, there are no notes here!</h1>
+                                <button style="float:right" onclick="location.href='/myfamily/0/notes/addnote'" >+</button>
+                                {% else %}
+                                <table style="width:100%">
+                                    <thead>
+                                        <h1 style="float:left">Notes</h1>
+                                        <button style="float:right" class="button__accent" onclick="location.href='/myfamily/0/notes/addnote'" >+</button>                                        <tr>
+                                            <th>Note</th>
+                                            <th>Added by</th>
+                                            <th>Importance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in notes %}
+                                        <tr style="text-align:center">
+                                            <td>{{item[0]}}</td>
+                                            <td>{{item[2]}}</td>
+                                            <td>{{item[1]}}</td>
+                                            <td><button class="button__delete" onclick="location.href='/myfamily/0/notes/clearnote/{{item[3]}}'">X</button></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script src='/static/app.js'></script>
+    </body>
+</html>

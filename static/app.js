@@ -1461,3 +1461,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 
 }(document, window, 0));
+
+function updateTextInput(val) {
+	var intval = parseInt(val)
+	if (intval<30) {
+		document.getElementById('textInput').value='Low'; 	
+	}
+	if (intval>30 && intval<60) {
+		document.getElementById('textInput').value='Medium'; 	
+	}
+	if (intval>60) {
+		document.getElementById('textInput').value='High'; 	
+	}
+
+}

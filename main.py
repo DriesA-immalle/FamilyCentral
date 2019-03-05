@@ -237,8 +237,12 @@ def familyPannel(familyID):
         shoppinglistItems = cursor.fetchall()
         amountOfItems = len(shoppinglistItems)
 
+        cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        notes = cursor.fetchall()
+        amountofNotes = len(notes)
+
         print(f"[S] {session['username']} connected to the familypannel with ID {SQLfamilyID}")
-        return render_template('family.html', familyName = SQLFamilyName, amountOfEvents = amountevents, amountOfItems = amountOfItems, isAdmin = isAdmin)
+        return render_template('family.html', familyName = SQLFamilyName, amountOfEvents = amountevents, amountOfItems = amountOfItems, amountOfNotes = amountofNotes, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/admin')
 @login_required
@@ -623,6 +627,86 @@ def clearItem(familyID, itemID):
 
 ####################
 # END SHOPPINGLIST #
+####################
+
+####################
+# START NOTES #
+####################
+
+@app.route('/myfamily/<familyID>/notes')
+@login_required
+def notes(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried deleting an item but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('notes', familyID = SQLfamilyID))
+    else:
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLFamilyName = cursor.fetchone()[0]
+
+        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        notes = cursor.fetchall()
+
+        return render_template('notes.html', notes = notes, familyName = SQLFamilyName)
+
+@app.route('/myfamily/<familyID>/notes/addnote', methods=['GET', 'POST'])
+@login_required
+def addNote(familyID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to a dashboard but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('addNote', familyID = SQLfamilyID))
+    else:
+        if request.method == 'POST':
+            note = request.form['note']
+            importance = request.form['textInput']
+            
+            cursor.execute('SELECT Username FROM USER WHERE UserID=' + str(user_id) + ';')
+            username = cursor.fetchone()[0]
+
+            cursor.execute('INSERT INTO Notes(Note, Username, Importance, FamilyID) VALUES("' + str(note) + '","' + str(importance) + '","' +str(username) + '","' + str(SQLfamilyID) + '");') 
+            database.commit()
+            return redirect(url_for('notes', familyID = SQLfamilyID))
+        return render_template('addNote.html')
+
+
+@app.route('/myfamily/<familyID>/notes/clearnote/<noteID>')
+@login_required
+def clearNote(familyID, noteID):
+    database = connect('FamilyCentral')
+    cursor = database.cursor()    
+    user_id = session['user_id']
+
+    cursor.execute('SELECT FamilyID FROM User WHERE UserID=' + user_id + ';')
+    SQLfamilyID = cursor.fetchone()[0]
+    if SQLfamilyID == None:
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried deleting an item but is not in a family")
+        return redirect(url_for('createFamily'))
+    elif familyID != str(SQLfamilyID):
+        print(f"[E] {session['username']} (with ID {session['user_id']}) tried connecting to the wrong dashboard")
+        return redirect(url_for('clearNote', familyID = SQLfamilyID, noteID = noteID))
+    else:
+        cursor.execute('DELETE FROM notes WHERE NoteID=' + str(noteID) + ';')
+        database.commit()
+        return redirect(url_for('notes', familyID = SQLfamilyID))
+####################
+# END NOTES #
 ####################
 
 #################

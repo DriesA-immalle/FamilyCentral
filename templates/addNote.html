@@ -7,6 +7,7 @@
     <title>New note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('static', filename='styles/envieStyle.css') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='AppLogoTrans.png')}}"/>
 </head>
 <body>
     <div class="navbar">
@@ -28,14 +29,15 @@
         <div class="container">
             <div class="auth__inner">
                 <div class="auth__media">
-                    <img src="/static/shopping.svg">
+                    <img src="/static/notebook.svg">
                 </div>
                 <div class="auth__auth">
                     <h1 class="auth__title">Add a note</h1>
                     <form name="addEvent" method="POST" autocomplete="off">
                         <input type="text" name="note" placeholder="This is a note" required><br>
                         <h3>Importance of this note</h3>
-                        <input type="text" id="textInput" name="textInput" value="Medium">
+                        <input type="text" id="textInput" name="textInput" readonly value="Medium">
+                        <p>Notes with a high importance will be displayed using <span style="color:#e74c3c"><b>red and bold text</b></span></p>
                         <input style="text-align:center;" type="range" min="0" max="90" name="importance" required oninput="updateTextInput(this.value);"><br>
                         <input type="submit" class="button button__accent">
                     </form>

@@ -660,7 +660,7 @@ def notes(familyID):
         cursor.execute('SELECT isAdmin FROM User Where UserID=' + user_id + ';')
         isAdmin = cursor.fetchone()[0]
 
-        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ' ORDER BY Importance;')
         notes = cursor.fetchall()
 
         return render_template('notes.html', notes = notes, familyName = SQLFamilyName, isAdmin = isAdmin)
@@ -688,7 +688,7 @@ def addNote(familyID):
             cursor.execute('SELECT Username FROM USER WHERE UserID=' + str(user_id) + ';')
             username = cursor.fetchone()[0]
 
-            cursor.execute('INSERT INTO Notes(Note, Username, Importance, FamilyID) VALUES("' + str(note) + '","' + str(importance) + '","' +str(username) + '","' + str(SQLfamilyID) + '");') 
+            cursor.execute('INSERT INTO Notes(Note, Username, Importance, FamilyID) VALUES("' + str(note) + '","' + str(username) + '","' +str(importance) + '","' + str(SQLfamilyID) + '");') 
             database.commit()
             return redirect(url_for('notes', familyID = SQLfamilyID))
         return render_template('addNote.html')

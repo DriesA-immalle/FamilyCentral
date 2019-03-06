@@ -237,7 +237,7 @@ def familyPannel(familyID):
         shoppinglistItems = cursor.fetchall()
         amountOfItems = len(shoppinglistItems)
 
-        cursor.execute('SELECT ItemName, Username, ItemID FROM ShoppingListItem WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        cursor.execute('SELECT Note, Username, NoteID FROM notes WHERE FamilyID=' + str(SQLfamilyID) + ';')
         notes = cursor.fetchall()
         amountofNotes = len(notes)
 

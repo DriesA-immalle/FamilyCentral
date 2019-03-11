@@ -51,7 +51,7 @@
                         </div>
                         <div class="app__main">
                             <div class="text-container">
-                                {% if not notes %}
+                                {% if not lowNotes and not mediumNotes and not highNotes%}
                                 <h1 style="float:left">Oops, there are no notes here!</h1>
                                 <button style="float:right" onclick="location.href='/myfamily/0/notes/addnote'" >+</button>
                                 {% else %}
@@ -65,22 +65,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for item in notes %}
-                                        {% if item[2] == 'High' %}
+                                        {% for item in highNotes %}
                                         <tr style="text-align:center">
                                             <td style="color:#e74c3c"><b>{{item[0]}}</b></td>
                                             <td style="color:#e74c3c">{{item[1]}}</td>
                                             <td style="color:#e74c3c">{{item[2]}}</td>
                                             <td><button class="button__delete" onclick="location.href='/myfamily/0/notes/clearnote/{{item[3]}}'">X</button></td>
                                         </tr>
-                                        {% else %}
+                                        {% endfor %}  
+                                        {% for item in mediumNotes %}
                                         <tr style="text-align:center">
                                             <td>{{item[0]}}</td>
                                             <td>{{item[1]}}</td>
                                             <td>{{item[2]}}</td>
                                             <td><button class="button__delete" onclick="location.href='/myfamily/0/notes/clearnote/{{item[3]}}'">X</button></td>
                                         </tr>
-                                        {% endif %}
+                                        {% endfor %}
+                                        {% for item in lowNotes %}
+                                        <tr style="text-align:center">
+                                            <td>{{item[0]}}</td>
+                                            <td>{{item[1]}}</td>
+                                            <td>{{item[2]}}</td>
+                                            <td><button class="button__delete" onclick="location.href='/myfamily/0/notes/clearnote/{{item[3]}}'">X</button></td>
+                                        </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>

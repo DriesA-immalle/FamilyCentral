@@ -660,10 +660,16 @@ def notes(familyID):
         cursor.execute('SELECT isAdmin FROM User Where UserID=' + user_id + ';')
         isAdmin = cursor.fetchone()[0]
 
-        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ' ORDER BY Importance;')
-        notes = cursor.fetchall()
+        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ' AND Importance="High";')
+        highNotes = cursor.fetchall()
 
-        return render_template('notes.html', notes = notes, familyName = SQLFamilyName, isAdmin = isAdmin)
+        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ' AND Importance="Medium";')
+        mediumNotes = cursor.fetchall()
+
+        cursor.execute('SELECT Note, Username, Importance, NoteID FROM Notes WHERE FamilyID=' + str(SQLfamilyID) + ' AND Importance="Low";')
+        lowNotes = cursor.fetchall()
+
+        return render_template('notes.html', highNotes = highNotes, mediumNotes = mediumNotes, lowNotes = lowNotes, familyName = SQLFamilyName, isAdmin = isAdmin)
 
 @app.route('/myfamily/<familyID>/notes/addnote', methods=['GET', 'POST'])
 @login_required

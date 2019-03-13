@@ -4,6 +4,7 @@ Start of a Python Web Application
 
 ## V1.0.0-alpha
 ![ER Scheme](https://i.postimg.cc/PqFqTHb0/ERWebApp.png)
+![Use Case](https://i.postimg.cc/5NcM0yff/UseCase.png)
 
 ## Commit History
 **2987ecb**6f7743bac1d4926b983c819beab1ecf61

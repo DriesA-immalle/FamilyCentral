@@ -5,7 +5,7 @@ Python Web Application
 InHouse is a Python/Flask web-application that offers the opportunity to create groups (families) with people and share a shoppinglist, notes section and event list.
 
 ## ER and Use-case
-![ER Scheme](https://i.postimg.cc/PqFqTHb0/ERWebApp.png)
+![ER Scheme](https://i.postimg.cc/qM2LhHk3/ERWebApp.png)
 ![Use Case](https://i.postimg.cc/5NcM0yff/UseCase.png)
 
 ## Commit History

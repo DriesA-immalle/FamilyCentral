@@ -15,7 +15,7 @@
 		<nav class="nav__mobile"></nav>
 		<div class="container">
 			<div class="navbar__inner">
-				<a href="/" class="navbar__logo">Logo</a>
+				<a href="/" class="navbar__logo">InHouse<sup>Studios</sup></a>
 				<nav class="navbar__menu">
 					<ul>
 						<li><a href="/">Home</a></li>
@@ -38,10 +38,10 @@
 					<p>Fill in your email and password to proceed</p>
 					<form method='POST' autocomplete="off" name="login" class="form">
 						<label>Email</label>
-						<input type="text" name="email" id='email' placeholder="you@example.com" required>
+						<input type="email" name="email" id='email' placeholder="you@example.com" required>
 						<label>Password</label>
-						<input type="password" name="password" id='password' required placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" autocomplete="off">
-						<h4>{{Message}}</h4>
+						<input type="password" name="password" id='password' required placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679&#9679;&#9679;" autocomplete="off">
+						<h4 class="error-message">{{Message}}</h4>
 						<button type='submit' class="button button__accent">Log in</button>
 						<a href=""><h6 class="left-align" >Forgot your password?</h6></a>
 					</form>

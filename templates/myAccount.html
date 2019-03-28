@@ -43,7 +43,15 @@
                         <h4>Your username</h4>
                         <p>{{ user[1] }}</p>
                         <h4>Your email address</h4>
-                        <p>{{ user[2] }}</p>
+						<p>{{ user[2] }}</p>
+						{% if inFamily %}
+						<a href='/myfamily/0'>
+							<div>
+								<h4>Your family</h4>
+								<p>{{ familyName }}</p>
+							</div>
+						</a>
+						{% endif %}
 					</div>
 				</div>
 			</div>

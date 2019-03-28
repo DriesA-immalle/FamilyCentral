@@ -5,6 +5,7 @@ from localTools.timer import Timer
 import time
 import hashlib
 import logging
+import socket
 
 class User(UserMixin):
     def __init__(self,id):
@@ -425,7 +426,9 @@ def addMember(familyID):
                     cursor.execute('SELECT InviteID FROM Invite ORDER BY InviteID DESC LIMIT 1')
                     InviteID = cursor.fetchone()[0]
 
-                    link = '127.0.0.1:5000/invite/' + str(InviteID)
+                    ip = socket.gethostbyname(socket.gethostname())
+
+                    link = str(ip) + ':5000/invite/' + str(InviteID)
 
                     return render_template('addMember.html', InviteLink=link)
         return render_template('addMember.html')
@@ -808,6 +811,8 @@ def myAccount(userID):
         inFamily = False
     else:
         inFamily = True
+        cursor.execute('SELECT FamilyName FROM Family WHERE FamilyID=' + str(SQLfamilyID) + ';')
+        SQLfamilyName = cursor.fetchone()[0]
 
     if userID != user_id:
         return redirect(url_for('myAccount', userID = user_id))
@@ -818,7 +823,7 @@ def myAccount(userID):
         dif = timer.endTimer()
         print(f"[S] (account) {user[1]} account loaded | Action took {round(dif, 2)}ms")
 
-        return render_template('myAccount.html', user = user, inFamily = inFamily)
+        return render_template('myAccount.html', user = user, inFamily = inFamily, familyName = SQLfamilyName)
         
 @app.route('/deleteaccount/<userID>', methods=['GET', 'POST'])
 @login_required
